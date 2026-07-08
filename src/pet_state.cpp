@@ -15,9 +15,8 @@ void PetState::resetState() {
     actionStartTime = 0;
     lastActivityTime = millis();
     dimLightStartTime = 0;
-
-    isActionCooldown = false;
-    isPatPending = false;
+    lastPatMs = 0;
+    lastLoopTimeMs = millis();
 
     // Phase 4 字段暂时置零
     magic = 0;

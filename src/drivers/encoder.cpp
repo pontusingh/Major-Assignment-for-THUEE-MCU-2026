@@ -68,3 +68,12 @@ int16_t encoderGetCount() {
 void encoderClearCount() {
     ESP_ERROR_CHECK(pcnt_counter_clear(PCNT_UNIT));
 }
+
+bool encoderCheckFullTurn() {
+    int16_t count = encoderGetCount();
+    if (abs(count) >= 80) {
+        encoderClearCount();
+        return true;
+    }
+    return false;
+}

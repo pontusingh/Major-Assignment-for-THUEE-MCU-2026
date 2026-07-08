@@ -6,5 +6,6 @@
 void encoderInit();
 int16_t encoderGetCount();
 void encoderClearCount();
+bool encoderCheckFullTurn();
 
 #endif
