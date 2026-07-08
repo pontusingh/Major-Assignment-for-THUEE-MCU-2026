@@ -61,3 +61,33 @@ void oledShowEncoderTest(int16_t count, int16_t delta, float revs) {
     u8g2.print(delta > 0 ? " CW >>" : (delta < 0 ? " CCW<<" : " Stop "));
     u8g2.sendBuffer();
 }
+
+void oledShowJointTest(int16_t encCount, const char* encDir, float revs,
+                       int btnCount, int lightVal,
+                       int servoLAngle, int servoRAngle) {
+    u8g2.clearBuffer();
+    u8g2.drawFrame(0, 0, 128, 64);
+    u8g2.setCursor(8, 14);
+    u8g2.print("All-in-One Test");
+    u8g2.setCursor(8, 30);
+    u8g2.print("Enc: ");
+    u8g2.print(encCount);
+    u8g2.print(" ");
+    u8g2.print(encDir);
+    u8g2.print(" ");
+    u8g2.print(revs, 1);
+    u8g2.print("r");
+    u8g2.setCursor(8, 46);
+    u8g2.print("Btn: ");
+    u8g2.print(btnCount);
+    u8g2.print("  Light: ");
+    u8g2.print(lightVal);
+    u8g2.setCursor(8, 62);
+    u8g2.print("L: ");
+    u8g2.print(servoLAngle);
+    u8g2.print((char)176);
+    u8g2.print("  R: ");
+    u8g2.print(servoRAngle);
+    u8g2.print((char)176);
+    u8g2.sendBuffer();
+}
