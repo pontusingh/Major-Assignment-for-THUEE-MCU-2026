@@ -22,3 +22,82 @@
 
 ## 睡眠模式下的定时行为
 在睡眠期间，情绪衰减、完整倒计时、自动动作投掷和5秒状态打印全部暂停，只有唤醒检测（按键 ISR）保持活跃。
+
+
+## 本阶段新增文件框架
+
+```
+behavior/
+  mood.h/.cpp
+    void moodUpdate(PetState& s, unsigned long nowMs);
+      // 每30秒：mood--（int 转换），下限为1。
+      // 【整合睡眠】：如果 s.sleep == SleepState::ASLEEP 或者 s.feeding == FeedingState::FED，则完全跳过。
+    void moodApplyPat(PetState& s, unsigned long nowMs);
+      // 见冷却时间说明。只有在非休眠状态下被调用。
+
+  feeding.h/.cpp
+    void feedingUpdate(PetState& s, unsigned long nowMs);
+      // 如果 s.feeding == FeedingState::FED 且 s.sleep == SleepState::AWAKE：
+      //   如果 nowMs - feedingStartTime >= FEED_FULL_DURATION_MS：s.feeding = FeedingState::HUNGRY
+      // 【整合睡眠】：如果 s.sleep == SleepState::ASLEEP，暂停喂食倒计时。
+      //   可通过累加偏移量：feedingStartTime += (nowMs - s.lastLoopTimeMs) 来保持剩余时间不变。
+    void feedingTrigger(PetState& s, unsigned long nowMs);
+      // 【整合睡眠】：仅在 s.sleep == SleepState::AWAKE 且 encoderCheckFullTurn() 为 true 时调用。
+      // s.feeding = FeedingState::FED; feedingStartTime = nowMs（重置倒计时）
+
+  action.h/.cpp
+    void actionUpdate(PetState& s, unsigned long nowMs);
+      // 【整合睡眠】：如果 s.sleep == SleepState::ASLEEP，直接跳过不执行任何动作更新。
+      // 如果 s.action != ActionState::ACTION_NONE 且 nowMs - actionStartTime >= ACTION_DURATION_MS：s.action = ActionState::ACTION_NONE
+    void actionTryAutoTrigger(PetState& s, unsigned long nowMs);
+      // 【整合睡眠】：如果 s.sleep == SleepState::ASLEEP，直接跳过。
+      // 仅在 s.action == ActionState::ACTION_NONE 时；3.33%/秒掷骰；s.mood >= MoodLevel::NEUTRAL -> ActionState::IDLE，s.mood < MoodLevel::NEUTRAL -> ActionState::TIRED
+    void actionTrigger(PetState& s, ActionState mode, unsigned long nowMs);
+      // 无条件强制触发：停止任何正在运行的动作（即使在运行中），启动新动作。
+      // 【整合睡眠】：入睡时会被调用以强行中止当前动作并归零。
+    void actionOnPat(PetState& s, unsigned long nowMs);
+      // 编排：调用 moodApplyPat(s, nowMs) 然后调用 actionTrigger(s, ActionState::PLAY, nowMs)
+      // 【整合睡眠】：此函数仅在非休眠状态下的常规抚摸中被触发。
+
+  sleep.h/.cpp  <-- 【新增睡眠行为模块】
+    void sleepUpdate(PetState& s, unsigned long nowMs);
+      // 检测光敏电阻。如果持续 5 秒低于暗光阈值且 s.sleep == SleepState::AWAKE：
+      //   1. 调用 actionTrigger(s, ActionState::ACTION_NONE, nowMs) 强行中止当前动作。
+      //   2. s.sleep = SleepState::ASLEEP 并记录入睡时间戳。
+      //   3. 调用驱动层清空并关闭 OLED 屏幕。
+      //   4. 控制舵机驱动移至 +80° 休眠位置。
+      //   5. 串口输出 "[ms] Sleep Mode On"。
+      // 如果光线恢复正常，只重置“持续暗光计时器”，不自动唤醒宠物。
+    void sleepWakeUp(PetState& s, unsigned long nowMs);
+      // 唤醒行为：
+      //   1. s.sleep = SleepState::AWAKE。
+      //   2. 控制舵机回到 0° 中位，重新开启并初始化 OLED 显示。
+      //   3. 串口输出 "[ms] Sleep Mode Off"。
+      // 注意：唤醒不累加心情值，也不触发 Play 动作。
+    bool sleepOnButtonPress(PetState& s, unsigned long nowMs);
+      // 编排：
+      //   如果 s.sleep == SleepState::ASLEEP：
+      //     调用 sleepWakeUp(s, nowMs)，并返回 true（表示按键事件已被唤醒拦截，不再往下传递）。
+      //   否则：
+      //     返回 false（允许 main.cpp 将该按键事件交由常规 actionOnPat 处理）。
+```
+
+`main.cpp`的`loop()`保持为一个薄层的调用序列——读取输入，调用各个`*Update()`，
+如果`buttonWasPressed()`则调用`actionOnPat()`，然后`oledShowStatus()`。`loop()`本身中没有原始逻辑。
+
+## 两个值得现在固化的正确性陷阱，而不是以后才发现
+
+**1. 即使是在“浪费的”抚摸上，10秒冷却时间也会重置。**
+根据规格说明自己的问答：在冷却窗口内再次按下按钮*不会*
+增加情绪或重新触发Play，但*确实会*重置10秒计时器。一个朴素的
+`if (nowMs - lastPatMs >= PAT_COOLDOWN_MS) { ...应用效果... }` 并且只在那个分支内更新
+`lastPatMs`的实现会搞错这一点。正确的形态是：检查
+冷却时间与*旧的*`lastPatMs`来决定是否应用情绪+动作效果，
+然后无条件地更新`lastPatMs = nowMs`，每次按下都更新，无论结果如何。
+
+**2. 抚摸和自动触发具有不同的“我是否被允许触发”规则。**
+自动触发仅在`ActionState::ACTION_NONE`状态下触发。抚摸会*中断*当前正在运行的
+*任何*动作，包括正在执行中的自动触发的空闲或疲倦动作。如果你编写一个共享的
+“仅在action == ActionState::ACTION_NONE时触发”辅助函数并从两个地方调用它，那么每当一个自动动作恰好正在进行时，抚摸就会悄悄地停止工作。保持`actionTrigger()`
+无条件，并把“仅在ActionState::ACTION_NONE时”的条件放在`actionTryAutoTrigger()`
+本身中，而不是放在共享函数中。

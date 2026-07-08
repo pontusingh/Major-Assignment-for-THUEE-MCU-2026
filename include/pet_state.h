@@ -62,10 +62,8 @@ struct PetState {
     unsigned long actionStartTime;        // 当前动作开始时间
     unsigned long lastActivityTime;       // 最后一次用户交互时间
     unsigned long dimLightStartTime;      // 弱光条件开始持续的时间
-
-    // ---- 状态标记 ----
-    bool isActionCooldown;                // 动作冷却标志
-    bool isPatPending;                    // 抚摸待处理（用于交互规则）
+    unsigned long lastPatMs;              // 上次按键时间（每次按键均更新，用于冷却）
+    unsigned long lastLoopTimeMs;         // 上次 loop() 时间戳（睡眠倒计时补偿）
 
     // ===== 阶段4/5预留字段（惰性占位，暂不使用） =====
     // Phase 4: 深度睡眠恢复
