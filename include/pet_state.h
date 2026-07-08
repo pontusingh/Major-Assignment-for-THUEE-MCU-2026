@@ -40,18 +40,15 @@ enum class SleepState : uint8_t {
     ASLEEP
 };
 
+// 仅保留 NEUTRAL=5 作为阈值比较（主状态改用 uint8_t mood）
 enum class MoodLevel : uint8_t {
-    VERY_LOW = 1,
-    MOOD_LOW = 3,
-    NEUTRAL = 5,
-    MOOD_HIGH = 7,
-    VERY_HIGH = 10
+    NEUTRAL = 5
 };
 
 // ========== 核心状态结构体 ==========
 struct PetState {
     // ---- 主状态 ----
-    MoodLevel mood;               // 当前情绪等级
+    uint8_t mood;                 // 1–10 连续值
     FeedingState feeding;         // 饱足/饥饿
     ActionState action;           // 当前动作
     SleepState sleep;             // 清醒/睡眠

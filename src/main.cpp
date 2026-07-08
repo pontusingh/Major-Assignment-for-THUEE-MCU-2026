@@ -7,12 +7,10 @@
 #include "encoder.h"
 #include "servo.h"
 #include "mood.h"
-#include "feeding.h"
-#include "action.h"
-#include "sleep.h"
-#include "commands.h"
-
-PetState g_petState;
+//#include "feeding.h"
+//#include "action.h"
+//#include "sleep.h"
+//#include "commands.h"
 
 static unsigned long lastOledRefresh = 0;
 static const unsigned long OLED_REFRESH_MS = 100;
@@ -41,29 +39,27 @@ void loop() {
     unsigned long now = millis();
     g_petState.lastLoopTimeMs = now;
 
-    sleepUpdate(g_petState, now);
     moodUpdate(g_petState, now);
-    feedingUpdate(g_petState, now);
-    actionUpdate(g_petState, now);
-    actionTryAutoTrigger(g_petState, now);
+    //sleepUpdate(g_petState, now);
+    //feedingUpdate(g_petState, now);
+    //actionUpdate(g_petState, now);
+    //actionTryAutoTrigger(g_petState, now);
 
     if (buttonWasPressed()) {
         buttonClearFlag();
-        if (!sleepOnButtonPress(g_petState, now)) {
-            actionOnPat(g_petState, now);
-        }
+        //sleepOnButtonPress / actionOnPat — TBD
     }
 
-    if (encoderCheckFullTurn()) {
-        feedingTrigger(g_petState, now);
-    }
+    //if (encoderCheckFullTurn()) {
+    //    feedingTrigger(g_petState, now);
+    //}
 
-    parseSerialCommand(g_petState);
+    //parseSerialCommand(g_petState);
 
-    if (now - lastOledRefresh >= OLED_REFRESH_MS) {
-        lastOledRefresh = now;
-        oledShowStatus(g_petState);
-    }
+    //if (now - lastOledRefresh >= OLED_REFRESH_MS) {
+    //    lastOledRefresh = now;
+    //    oledShowStatus(g_petState);
+    //}
 
     if (now - lastSerialPrint >= SERIAL_INTERVAL_MS) {
         lastSerialPrint = now;

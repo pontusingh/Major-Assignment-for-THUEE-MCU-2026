@@ -1,11 +1,10 @@
 // pet_state.cpp
 #include "pet_state.h"
 
-// 全局实例定义
 PetState g_petState;
 
 void PetState::resetState() {
-    mood = MoodLevel::NEUTRAL;
+    mood = static_cast<uint8_t>(MoodLevel::NEUTRAL);  // 初始值 5
     feeding = FeedingState::HUNGRY;
     action = ActionState::ACTION_NONE;
     sleep = SleepState::AWAKE;
