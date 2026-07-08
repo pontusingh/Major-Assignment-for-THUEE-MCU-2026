@@ -3,8 +3,10 @@
 #include "oled.h"
 #include "photoresistor.h"
 #include "button.h"
+#include "encoder.h"
 
 static int pressCount = 0;
+static int16_t lastEncCount = 0;
 static unsigned long lastOledRefresh = 0;
 static const unsigned long OLED_REFRESH_MS = 100;
 
@@ -15,8 +17,9 @@ void setup() {
     oledInit();
     photoInit();
     buttonInit();
+    encoderInit();
 
-    Serial.println("Button test start");
+    Serial.println("Encoder test start");
 }
 
 void loop() {
@@ -31,10 +34,21 @@ void loop() {
     Serial.print(">digital_light:");
     Serial.println(lightVal);
 
+    int16_t currentCount = encoderGetCount();
+    int16_t delta = currentCount - lastEncCount;
+    if (delta != 0) {
+        Serial.print("Count:");
+        Serial.print(currentCount);
+        Serial.print(" Delta:");
+        Serial.print(delta);
+        Serial.println(delta > 0 ? " CW" : " CCW");
+        lastEncCount = currentCount;
+    }
+
     unsigned long now = millis();
     if (now - lastOledRefresh >= OLED_REFRESH_MS) {
         lastOledRefresh = now;
-        oledShowButtonTest(pressCount, lightVal);
+        oledShowEncoderTest(currentCount, delta);
     }
 
     delay(50);
