@@ -5,5 +5,6 @@
 
 void oledInit();
 void oledShowTest();
+void oledShowButtonTest(int pressCount, int lightVal);
 
 #endif
