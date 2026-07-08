@@ -29,6 +29,6 @@ void oledShowTest() {
     u8g2.setCursor(20, 25);
     u8g2.print("OLED Test");
     u8g2.setCursor(20, 45);
-    u8g2.print("Hello World");
+    u8g2.print("Hello");
     u8g2.sendBuffer();
 }
