@@ -47,7 +47,7 @@ void oledShowButtonTest(int pressCount, int lightVal) {
     u8g2.sendBuffer();
 }
 
-void oledShowEncoderTest(int16_t count, int16_t delta) {
+void oledShowEncoderTest(int16_t count, int16_t delta, float revs) {
     u8g2.clearBuffer();
     u8g2.drawFrame(0, 0, 128, 64);
     u8g2.setCursor(10, 20);
@@ -56,6 +56,8 @@ void oledShowEncoderTest(int16_t count, int16_t delta) {
     u8g2.print("Count: ");
     u8g2.print(count);
     u8g2.setCursor(10, 56);
-    u8g2.print(delta > 0 ? "CW  >>" : (delta < 0 ? "CCW <<" : "Stop  "));
+    u8g2.print("Rev: ");
+    u8g2.print(revs, 1);
+    u8g2.print(delta > 0 ? " CW >>" : (delta < 0 ? " CCW<<" : " Stop "));
     u8g2.sendBuffer();
 }

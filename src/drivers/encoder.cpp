@@ -4,7 +4,12 @@
  * PCNT 硬件正交解码: 双通道配置实现 4 倍频.
  *   ch0: A 相脉冲, B 相方向控制
  *   ch1: B 相脉冲, A 相方向控制
- * 硬件滤波器 (80 APB 周期 ~1us) 消除机械抖动.
+ * 硬件滤波器 (300 APB 周期 ~3.75µs) 消除机械回弹.
+ *
+ * 编码器参数 (实测标定):
+ *   4x 正交解码模式 → 每 detent ±4 counts
+ *   本编码器: 20 detents/转 → 80 counts/转
+ *   圈数 = count / 80.0
  *
  * 方向判断: delta = currentCount - lastCount
  *   delta > 0 → CW, delta < 0 → CCW
@@ -47,7 +52,7 @@ void encoderInit() {
     };
     ESP_ERROR_CHECK(pcnt_unit_config(&chB));
 
-    ESP_ERROR_CHECK(pcnt_set_filter_value(PCNT_UNIT, 80));
+    ESP_ERROR_CHECK(pcnt_set_filter_value(PCNT_UNIT, 300));
     ESP_ERROR_CHECK(pcnt_filter_enable(PCNT_UNIT));
 
     ESP_ERROR_CHECK(pcnt_counter_clear(PCNT_UNIT));

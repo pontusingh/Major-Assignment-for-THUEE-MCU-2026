@@ -30,10 +30,6 @@ void loop() {
         buttonClearFlag();
     }
 
-    int lightVal = photoReadDigital();
-    Serial.print(">digital_light:");
-    Serial.println(lightVal);
-
     int16_t currentCount = encoderGetCount();
     int16_t delta = currentCount - lastEncCount;
     if (delta != 0) {
@@ -45,10 +41,14 @@ void loop() {
         lastEncCount = currentCount;
     }
 
+    Serial.print("raw:");
+    Serial.println(currentCount);
+
     unsigned long now = millis();
     if (now - lastOledRefresh >= OLED_REFRESH_MS) {
         lastOledRefresh = now;
-        oledShowEncoderTest(currentCount, delta);
+        float revs = currentCount / 80.0f;
+        oledShowEncoderTest(currentCount, delta, revs);
     }
 
     delay(50);
