@@ -10,7 +10,7 @@ const unsigned long MOOD_DECAY_INTERVAL_MS = 30000;  // 30秒衰减一次
 const int MOOD_MIN = 1;
 const int MOOD_MAX = 10;
 
-// 喂食
+// 交互
 const unsigned long FEED_FULL_DURATION_MS = 120000;  // 2分钟饱足
 const unsigned long PAT_COOLDOWN_MS = 10000;          // 抚摸冷却10秒
 

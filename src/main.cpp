@@ -1,32 +1,29 @@
 #include <Arduino.h>
+#include "pin_config.h"
+#include "servo.h"
 
-// GPIO 外设寄存器基地址
-#define GPIO_BASE_ADDR        0x60004000
-// GPIO 0-31 输出使能置位寄存器
-#define GPIO_ENABLE_W1TS_ADDR ((volatile uint32_t*)(GPIO_BASE_ADDR + 0x24))
-// GPIO 0-31 输出置位寄存器
-#define GPIO_OUT_W1TS_ADDR    ((volatile uint32_t*)(GPIO_BASE_ADDR + 0x08))
-// GPIO 0-31 输出清零寄存器
-#define GPIO_OUT_W1TC_ADDR    ((volatile uint32_t*)(GPIO_BASE_ADDR + 0x0C))
+void setup() {
+    Serial.begin(115200);
+    delay(500);
 
-#define LED_PIN 10
-#define INTERVAL 1000
+    servoInit(PIN_SERVO_LEFT);
+    servoWrite(PIN_SERVO_LEFT, 90);
+    delay(500);
 
-void setup()
-{   
-    // 设置为通用输出模式
-    *GPIO_ENABLE_W1TS_ADDR = (1 << LED_PIN);
+    Serial.println("Servo test start");
 }
 
-void loop()
-{   
-    // 输出高电平
-    *GPIO_OUT_W1TS_ADDR = (1 << LED_PIN);
-    // 延迟
-    vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
-    // 输出低电平
-    *GPIO_OUT_W1TC_ADDR = (1 << LED_PIN);
-    // 延迟
-    vTaskDelay(pdMS_TO_TICKS(INTERVAL));
+void loop() {
+    for (int angle = 0; angle <= 180; angle += 10) {
+        Serial.print("Angle: ");
+        Serial.println(angle);
+        servoWrite(PIN_SERVO_LEFT, angle);
+        delay(500);
+    }
+    for (int angle = 180; angle >= 0; angle -= 10) {
+        Serial.print("Angle: ");
+        Serial.println(angle);
+        servoWrite(PIN_SERVO_LEFT, angle);
+        delay(500);
+    }
 }
