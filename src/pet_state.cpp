@@ -7,10 +7,10 @@ PetState g_petState;
 void PetState::resetState() {
     mood = MoodLevel::NEUTRAL;
     feeding = FeedingState::HUNGRY;
-    action = ActionState::NONE;
+    action = ActionState::ACTION_NONE;
     sleep = SleepState::AWAKE;
 
-    lastMoodDecay = millis();
+    lastMoodDecayTime = millis();
     feedingStartTime = 0;
     actionStartTime = 0;
     lastActivityTime = millis();

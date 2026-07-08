@@ -7,12 +7,12 @@
 // ========== 来自规格说明的命名常量 ==========
 // 情绪
 const unsigned long MOOD_DECAY_INTERVAL_MS = 30000;  // 30秒衰减一次
-const int MOOD_MIN = 0;
-const int MOOD_MAX = 100;
+const int MOOD_MIN = 1;
+const int MOOD_MAX = 10;
 
 // 喂食
 const unsigned long FEED_FULL_DURATION_MS = 120000;  // 2分钟饱足
-const unsigned long FEED_COOLDOWN_MS = 10000;        // 10秒冷却
+const unsigned long PAT_COOLDOWN_MS = 10000;          // 抚摸冷却10秒
 
 // 睡眠
 const unsigned long SLEEP_DIM_LIGHT_DELAY_MS = 5000; // 5秒弱光触发睡眠
@@ -24,11 +24,11 @@ const unsigned long ACTION_DURATION_MS = 5000;       // 每个动作默认持续
 // ========== 枚举类型 ==========
 enum class FeedingState : uint8_t {
     HUNGRY,
-    FULL
+    FED
 };
 
 enum class ActionState : uint8_t {
-    NONE,
+    ACTION_NONE,
     PLAY,
     IDLE,
     TIRED,
@@ -41,11 +41,11 @@ enum class SleepState : uint8_t {
 };
 
 enum class MoodLevel : uint8_t {
-    VERY_LOW = 0,
-    LOW = 25,
-    NEUTRAL = 50,
-    HIGH = 75,
-    VERY_HIGH = 100
+    VERY_LOW = 1,
+    MOOD_LOW = 3,
+    NEUTRAL = 5,
+    MOOD_HIGH = 7,
+    VERY_HIGH = 10
 };
 
 // ========== 核心状态结构体 ==========
@@ -57,7 +57,7 @@ struct PetState {
     SleepState sleep;             // 清醒/睡眠
 
     // ---- 时间戳（用于计时逻辑） ----
-    unsigned long lastMoodDecay;          // 上次情绪衰减时间
+    unsigned long lastMoodDecayTime;      // 上次情绪衰减时间
     unsigned long feedingStartTime;       // 进入饱足状态的时间
     unsigned long actionStartTime;        // 当前动作开始时间
     unsigned long lastActivityTime;       // 最后一次用户交互时间
