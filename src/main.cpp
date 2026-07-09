@@ -9,7 +9,7 @@
 #include "mood.h"
 #include "feeding.h"
 #include "action.h"
-//#include "sleep.h"
+#include "sleep.h"
 //#include "commands.h"
 
 static unsigned long lastOledRefresh = 0;
@@ -51,7 +51,9 @@ void loop() {
         //按钮
     if (buttonWasPressed()) {
         buttonClearFlag();
-        //sleepOnButtonPress / actionOnPat — TBD
+        if (!sleepOnButtonPress(state, now)) {
+            actionOnPat(state, now);
+        }
     }
 
         //编码器

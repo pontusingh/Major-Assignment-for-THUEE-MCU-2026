@@ -1,0 +1,9 @@
+#ifndef SLEEP_H
+#define SLEEP_H
+
+#include "pet_state.h"
+
+bool sleepOnButtonPress(PetState& s, unsigned long nowMs);
+void sleepWakeUp(PetState& s, unsigned long nowMs);
+
+#endif

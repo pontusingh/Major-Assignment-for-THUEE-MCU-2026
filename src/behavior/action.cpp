@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "action.h"
+#include "mood.h"
 #include "servo.h"
 #include "pin_config.h"
 
@@ -75,7 +76,6 @@ void actionTryAutoTrigger(PetState& s, unsigned long nowMs) {
 }
 
 void actionOnPat(PetState& s, unsigned long nowMs) {
-    // 空桩——按钮接入后实现:
-    // moodApplyPat(s, nowMs);
-    // actionTrigger(s, ActionMode::PLAY, nowMs);
+    moodApplyPat(s, nowMs);
+    actionTrigger(s, ActionMode::PLAY, nowMs);
 }
