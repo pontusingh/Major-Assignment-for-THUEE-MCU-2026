@@ -38,6 +38,11 @@ void actionTrigger(PetState& s, ActionMode mode, unsigned long nowMs) {
     s.currentAction = mode;
     s.actionStartMs = nowMs;
 
+    if (mode != ActionMode::NONE) {
+        Serial.print("["); Serial.print(nowMs); Serial.print(" ms]  Motion ");
+        Serial.println(static_cast<int>(mode));
+    }
+
     switch (mode) {
         case ActionMode::PLAY:    s.actionDurationMs = 2000; break;
         case ActionMode::IDLE:    s.actionDurationMs = 4000; break;

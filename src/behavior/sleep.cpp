@@ -39,5 +39,5 @@ void sleepWakeUp(PetState& s, unsigned long nowMs) {
     }
     servoWrite(PIN_SERVO_LEFT, 90);
     servoWrite(PIN_SERVO_RIGHT, 90);
-    Serial.println("Wake Up");
+    Serial.println("Sleep Mode Off");
 }

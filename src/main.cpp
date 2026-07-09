@@ -51,6 +51,9 @@ void loop() {
         //按钮
     if (buttonWasPressed()) {
         buttonClearFlag();
+        if (!state.sleepMode) {
+            Serial.print("["); Serial.print(now); Serial.println(" ms]  HeadTouch");
+        }
         if (!sleepOnButtonPress(state, now)) {
             actionOnPat(state, now);
         }
@@ -59,6 +62,7 @@ void loop() {
         //编码器
     if (!state.sleepMode && encoderCheckFullTurn()) {
         feedingTrigger(state, now);
+        Serial.print("["); Serial.print(now); Serial.println(" ms]  Feed");
     }
 
     //串口命令解析
@@ -74,29 +78,31 @@ void loop() {
     if (now - lastSerialPrint >= SERIAL_INTERVAL_MS) {
         lastSerialPrint = now;
         if (!state.sleepMode) {
-            Serial.print("[");
-            Serial.print(now);
-            Serial.print("] Mood:");
+            Serial.print("["); Serial.print(now); Serial.print(" ms]  EMOTION: ");
             Serial.print(state.moodValue);
-            Serial.print(" Action:");
-            Serial.print(static_cast<int>(state.currentAction));
-            Serial.print(" Full:");
-            Serial.print(state.isFull ? 1 : 0);
+            Serial.print(" ");
             if (state.isFull) {
                 unsigned long elapsed = now - state.fullStateStartMs;
-                if (elapsed >= PetConfig::FULL_DURATION_MS) {
-                    Serial.print(" (0s remain)");
-                } else {
-                    unsigned long remain = PetConfig::FULL_DURATION_MS - elapsed;
-                    Serial.print(" (");
-                    Serial.print(remain / 1000);
-                    Serial.print("s remain)");
-                }
+                unsigned long rem = (elapsed >= PetConfig::FULL_DURATION_MS)
+                                   ? 0 : PetConfig::FULL_DURATION_MS - elapsed;
+                Serial.print("FULL ");
+                if (rem / 60000 < 10) Serial.print("0");
+                Serial.print(rem / 60000);
+                Serial.print(" Min ");
+                if ((rem % 60000) / 1000 < 10) Serial.print("0");
+                Serial.print((rem % 60000) / 1000);
+                Serial.print(" S");
+            } else {
+                Serial.print("HUNGRY");
             }
-            Serial.print(" Sleep:");
-            Serial.print(state.sleepMode ? 1 : 0);
-            Serial.print(" FeedCnt:");
-            Serial.print(state.feedCount);
+            Serial.print(" ");
+            switch (state.currentAction) {
+                case ActionMode::NONE:    Serial.print("NULL"); break;
+                case ActionMode::PLAY:    Serial.print("PLAY"); break;
+                case ActionMode::IDLE:    Serial.print("IDLE"); break;
+                case ActionMode::TIRED:   Serial.print("TIRE"); break;
+                case ActionMode::FORWARD: Serial.print("FOWD"); break;
+            }
             Serial.println();
         }
     }
