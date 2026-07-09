@@ -1,35 +1,36 @@
-// pet_state.cpp
 #include "pet_state.h"
 
-PetState g_petState;
+PetState state;
 
-void PetState::resetState() {
-    mood = static_cast<uint8_t>(MoodLevel::NEUTRAL);  // 初始值 5
-    feeding = FeedingState::HUNGRY;
-    action = ActionState::ACTION_NONE;
-    sleep = SleepState::AWAKE;
+void resetState() {
+    state.moodValue = PetConfig::MOOD_DEFAULT;
+    state.lastMoodDecayMs = millis();
 
-    lastMoodDecayTime = millis();
-    feedingStartTime = 0;
-    actionStartTime = 0;
-    lastActivityTime = millis();
-    dimLightStartTime = 0;
-    lastPatMs = 0;
-    lastLoopTimeMs = millis();
+    state.isFull = false;
+    state.fullStateStartMs = 0;
 
-    // Phase 4 字段暂时置零
-    magic = 0;
-    isFromDeepSleep = false;
-    wifiConnected = false;
-    lastNetworkPing = 0;
-    memset(ssid, 0, sizeof(ssid));
+    state.currentAction = ActionMode::NONE;
+    state.actionStartMs = 0;
+    state.actionDurationMs = PetConfig::ACTION_DURATION_MS;
+
+    state.lastPatMs = 0;
+
+    state.sleepMode = false;
+    state.dimSinceMs = 0;
+
+    state.lastStatusPrintMs = 0;
+
+    state.wasSleeping = false;
+    state.lastInteractMs = millis();
+    state.patCount = 0;
+    state.feedCount = 0;
+    state.playCount = 0;
 }
 
-// ---- Phase 4 之前这些函数都是空桩 ----
-void PetState::saveToFlash() {
-    // Phase 4 实现：保存到 Preferences (Flash) 和 RTC内存
+void saveToFlash() {
+    // Phase 4
 }
 
-void PetState::loadFromFlash() {
-    // Phase 4 实现：从 Preferences/RTC 加载
+void loadFromFlash() {
+    // Phase 4
 }

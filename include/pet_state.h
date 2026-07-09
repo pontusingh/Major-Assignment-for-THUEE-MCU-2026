@@ -1,85 +1,62 @@
-// pet_state.h
-#ifndef PET_STATE_H
-#define PET_STATE_H
-
+#pragma once//头文件保护
 #include <Arduino.h>
 
-// ========== 来自规格说明的命名常量 ==========
-// 情绪
-const unsigned long MOOD_DECAY_INTERVAL_MS = 30000;  // 30秒衰减一次
-const int MOOD_MIN = 1;
-const int MOOD_MAX = 10;
+namespace PetConfig {//可调变量放入命名空间
+    constexpr int MOOD_MIN = 1;
+    constexpr int MOOD_MAX = 10;
+    constexpr int MOOD_DEFAULT = 5;
 
-// 交互
-const unsigned long FEED_FULL_DURATION_MS = 120000;  // 2分钟饱足
-const unsigned long PAT_COOLDOWN_MS = 10000;          // 抚摸冷却10秒
+    constexpr unsigned long MOOD_DECAY_INTERVAL_MS   = 30000;//情绪减一
+    constexpr unsigned long FULL_DURATION_MS         = 120000;//饱食转饥饿
+    constexpr unsigned long PAT_COOLDOWN_MS          = 10000;//按钮冷却
+    constexpr unsigned long SLEEP_DIM_THRESHOLD_MS   = 5000;//低光照睡眠
+    constexpr unsigned long ACTION_DURATION_MS       = 5000;//动作周期
+    constexpr unsigned long STATUS_PRINT_INTERVAL_MS = 5000;//串口打印间隔
+    constexpr unsigned long DEEP_SLEEP_INACTIVITY_MS = 30000;//选修部分
+}
 
-// 睡眠
-const unsigned long SLEEP_DIM_LIGHT_DELAY_MS = 5000; // 5秒弱光触发睡眠
-const unsigned long SLEEP_INACTIVITY_TIMEOUT_MS = 30000; // 30秒无活动（可选）
-
-// 动作
-const unsigned long ACTION_DURATION_MS = 5000;       // 每个动作默认持续5秒（可按需调整）
-
-// ========== 枚举类型 ==========
-enum class FeedingState : uint8_t {
-    HUNGRY,
-    FED
+enum class ActionMode : uint8_t {//动作枚举
+    NONE    = 0,
+    PLAY    = 1,
+    IDLE    = 2,
+    TIRED   = 3,
+    FORWARD = 4
 };
 
-enum class ActionState : uint8_t {
-    ACTION_NONE,
-    PLAY,
-    IDLE,
-    TIRED,
-    FORWARD
+struct PetState {//核心结构体
+    // Mood system
+    int moodValue = PetConfig::MOOD_DEFAULT;
+    unsigned long lastMoodDecayMs = 0;
+
+    // Feeding system
+    bool isFull = false;
+    unsigned long fullStateStartMs = 0;
+
+    // Motion / action system
+    ActionMode currentAction = ActionMode::NONE;
+    unsigned long actionStartMs = 0;
+    unsigned long actionDurationMs = PetConfig::ACTION_DURATION_MS;
+
+    // Interaction
+    unsigned long lastPatMs = 0;
+
+    // Sleep mode
+    bool sleepMode = false;
+    unsigned long dimSinceMs = 0;
+
+    // Debug / serial
+    unsigned long lastStatusPrintMs = 0;
+
+    // 选修部分: deep-sleep & Flash persistence
+    bool wasSleeping = false;
+    unsigned long lastInteractMs = 0;
+    uint32_t patCount = 0;
+    uint32_t feedCount = 0;
+    uint32_t playCount = 0;
 };
 
-enum class SleepState : uint8_t {
-    AWAKE,
-    ASLEEP
-};
+extern PetState state;
 
-// 仅保留 NEUTRAL=5 作为阈值比较（主状态改用 uint8_t mood）
-enum class MoodLevel : uint8_t {
-    NEUTRAL = 5
-};
-
-// ========== 核心状态结构体 ==========
-struct PetState {
-    // ---- 主状态 ----
-    uint8_t mood;                 // 1–10 连续值
-    FeedingState feeding;         // 饱足/饥饿
-    ActionState action;           // 当前动作
-    SleepState sleep;             // 清醒/睡眠
-
-    // ---- 时间戳（用于计时逻辑） ----
-    unsigned long lastMoodDecayTime;      // 上次情绪衰减时间
-    unsigned long feedingStartTime;       // 进入饱足状态的时间
-    unsigned long actionStartTime;        // 当前动作开始时间
-    unsigned long lastActivityTime;       // 最后一次用户交互时间
-    unsigned long dimLightStartTime;      // 弱光条件开始持续的时间
-    unsigned long lastPatMs;              // 上次按键时间（每次按键均更新，用于冷却）
-    unsigned long lastLoopTimeMs;         // 上次 loop() 时间戳（睡眠倒计时补偿）
-
-    // ===== 阶段4/5预留字段（惰性占位，暂不使用） =====
-    // Phase 4: 深度睡眠恢复
-    uint32_t magic;                       // 校验魔数，验证RTC/Flash数据有效性
-    bool isFromDeepSleep;                 // 是否从深度睡眠中恢复
-
-    // Phase 5: 网络相关
-    bool wifiConnected;                   // WiFi连接状态
-    uint32_t lastNetworkPing;             // 上次网络心跳时间
-    char ssid[32];                        // 保存的SSID（预留）
-    // ============================================
-
-    // ---- 方法声明 ----
-    void resetState();                    // 重置为初始状态（Phase 2实现）
-    void saveToFlash();                  // 保存到Flash/RTC（Phase 4实现）
-    void loadFromFlash();                // 从Flash/RTC加载（Phase 4实现）
-};
-
-// ========== 全局实例声明（extern，在main.cpp中定义） ==========
-extern PetState g_petState;
-
-#endif // PET_STATE_H
+void resetState();
+void saveToFlash();
+void loadFromFlash();

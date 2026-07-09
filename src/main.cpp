@@ -30,50 +30,57 @@ void setup() {
     servoWrite(PIN_SERVO_LEFT, 90);
     servoWrite(PIN_SERVO_RIGHT, 90);
 
-    g_petState.resetState();
+    resetState();
 
     Serial.println("=== Desktop Pet Started ===");
 }
 
 void loop() {
+    //确认时间
     unsigned long now = millis();
-    g_petState.lastLoopTimeMs = now;
 
-    moodUpdate(g_petState, now);
-    //sleepUpdate(g_petState, now);
-    feedingUpdate(g_petState, now);
-    //actionUpdate(g_petState, now);
-    //actionTryAutoTrigger(g_petState, now);
+    //行为更新
+    moodUpdate(state, now);
+    //sleepUpdate(state, now);
+    feedingUpdate(state, now);
+    //actionUpdate(state, now);
+    //actionTryAutoTrigger(state, now);
 
+    //输入处理
+        //按钮
     if (buttonWasPressed()) {
         buttonClearFlag();
         //sleepOnButtonPress / actionOnPat — TBD
     }
 
+        //编码器
     if (encoderCheckFullTurn()) {
-        feedingTrigger(g_petState, now);
+        feedingTrigger(state, now);
     }
 
-    //parseSerialCommand(g_petState);
+    //串口命令解析
+    //parseSerialCommand(state);
 
+    //OLED刷新
     //if (now - lastOledRefresh >= OLED_REFRESH_MS) {
     //    lastOledRefresh = now;
-    //    oledShowStatus(g_petState);
+    //    oledShowStatus(state);
     //}
 
+    //打印状态
     if (now - lastSerialPrint >= SERIAL_INTERVAL_MS) {
         lastSerialPrint = now;
-        if (g_petState.sleep != SleepState::ASLEEP) {
+        if (!state.sleepMode) {
             Serial.print("[");
             Serial.print(now);
             Serial.print("] Mood:");
-            Serial.print(static_cast<int>(g_petState.mood));
+            Serial.print(state.moodValue);
             Serial.print(" Action:");
-            Serial.print(static_cast<int>(g_petState.action));
+            Serial.print(static_cast<int>(state.currentAction));
             Serial.print(" Feed:");
-            Serial.print(static_cast<int>(g_petState.feeding));
+            Serial.print(state.isFull ? 1 : 0);
             Serial.print(" Sleep:");
-            Serial.print(static_cast<int>(g_petState.sleep));
+            Serial.print(state.sleepMode ? 1 : 0);
             Serial.println();
         }
     }
