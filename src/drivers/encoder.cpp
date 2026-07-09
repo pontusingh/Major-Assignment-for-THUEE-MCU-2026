@@ -85,7 +85,7 @@ bool encoderCheckFullTurn() {
         } else {
             _contAccum = 0;
         }
-    } else if (now - _lastChangeMs >= 1000) {
+    } else if (now - _lastChangeMs >= 500) {
         _contAccum = 0;
     }
 
