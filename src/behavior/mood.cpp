@@ -16,4 +16,5 @@ void moodApplyPat(PetState& s, unsigned long nowMs) {
         if (s.moodValue < PetConfig::MOOD_MAX) s.moodValue++;
     }
     s.lastPatMs = nowMs;
+    s.lastMoodDecayMs = nowMs;
 }
