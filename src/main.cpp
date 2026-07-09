@@ -10,7 +10,7 @@
 #include "feeding.h"
 #include "action.h"
 #include "sleep.h"
-//#include "commands.h"
+#include "commands.h"
 
 static unsigned long lastOledRefresh = 0;
 static const unsigned long OLED_REFRESH_MS = 500;
@@ -66,7 +66,7 @@ void loop() {
     }
 
     //串口命令解析
-    //parseSerialCommand(state);
+    parseSerialCommand(state, now);
 
     //OLED刷新
     if (now - lastOledRefresh >= OLED_REFRESH_MS) {
