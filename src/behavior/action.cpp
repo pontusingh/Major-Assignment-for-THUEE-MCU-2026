@@ -76,6 +76,7 @@ void actionTryAutoTrigger(PetState& s, unsigned long nowMs) {
 }
 
 void actionOnPat(PetState& s, unsigned long nowMs) {
+    if (nowMs - s.lastPatMs < PetConfig::PAT_COOLDOWN_MS) return;
     moodApplyPat(s, nowMs);
     actionTrigger(s, ActionMode::PLAY, nowMs);
 }
