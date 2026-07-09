@@ -20,12 +20,12 @@ static void _applyActionAngles(PetState& s, unsigned long elapsedMs) {
             right = left;
             break;
         case ActionMode::TIRED:
-            left = 90;
-            right = 40 + (int)(10.0f * cosf(4.0f / 3.0f * PI * t));
+            left = 40 - (int)(10.0f * cosf(4.0f / 3.0f * PI * t));
+            right = 90;
             break;
         case ActionMode::FORWARD:
-            left  = 55 + (int)(35.0f * cosf(1.5f * PI * t));
-            right = 125 - (int)(35.0f * cosf(1.5f * PI * t));
+            left  = 125 - (int)(35.0f * cosf(1.5f * PI * t));
+            right = 55 + (int)(35.0f * cosf(1.5f * PI * t));
             break;
     }
 
