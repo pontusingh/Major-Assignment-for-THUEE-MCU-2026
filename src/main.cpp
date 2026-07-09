@@ -40,6 +40,9 @@ void loop() {
     //确认时间
     unsigned long now = millis();
 
+    //串口命令解析（最高优先级）
+    parseSerialCommand(state, now);
+
     //行为更新
     moodUpdate(state, now);
     sleepUpdate(state, now);
@@ -64,9 +67,6 @@ void loop() {
         feedingTrigger(state, now);
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Feed");
     }
-
-    //串口命令解析
-    parseSerialCommand(state, now);
 
     //OLED刷新
     if (now - lastOledRefresh >= OLED_REFRESH_MS) {
