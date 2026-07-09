@@ -42,7 +42,7 @@ void loop() {
 
     //行为更新
     moodUpdate(state, now);
-    //sleepUpdate(state, now);
+    sleepUpdate(state, now);
     feedingUpdate(state, now);
     actionUpdate(state, now);
     actionTryAutoTrigger(state, now);
@@ -57,7 +57,7 @@ void loop() {
     }
 
         //编码器
-    if (encoderCheckFullTurn()) {
+    if (!state.sleepMode && encoderCheckFullTurn()) {
         feedingTrigger(state, now);
     }
 
