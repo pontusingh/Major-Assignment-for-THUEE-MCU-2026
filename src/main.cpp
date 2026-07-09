@@ -13,7 +13,7 @@
 //#include "commands.h"
 
 static unsigned long lastOledRefresh = 0;
-static const unsigned long OLED_REFRESH_MS = 100;
+static const unsigned long OLED_REFRESH_MS = 500;
 static unsigned long lastSerialPrint = 0;
 static const unsigned long SERIAL_INTERVAL_MS = 5000;
 
@@ -65,10 +65,10 @@ void loop() {
     //parseSerialCommand(state);
 
     //OLED刷新
-    //if (now - lastOledRefresh >= OLED_REFRESH_MS) {
-    //    lastOledRefresh = now;
-    //    oledShowStatus(state);
-    //}
+    if (now - lastOledRefresh >= OLED_REFRESH_MS) {
+        lastOledRefresh = now;
+        oledShowStatus(state, now);
+    }
 
     //打印状态
     if (now - lastSerialPrint >= SERIAL_INTERVAL_MS) {

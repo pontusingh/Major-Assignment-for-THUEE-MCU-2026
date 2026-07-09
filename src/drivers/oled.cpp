@@ -2,6 +2,7 @@
 #include <U8g2lib.h>
 #include "pin_config.h"
 #include "oled.h"
+#include "pet_state.h"
 
 /*
  * 经验记录:
@@ -23,71 +24,41 @@ void oledInit() {
     u8g2.setFont(u8g2_font_6x13_tf);
 }
 
-void oledShowTest() {
+void oledShowStatus(PetState& s, unsigned long nowMs) {
     u8g2.clearBuffer();
-    u8g2.drawFrame(0, 0, 128, 64);
-    u8g2.setCursor(20, 25);
-    u8g2.print("OLED Test");
-    u8g2.setCursor(20, 45);
-    u8g2.print("Hello");
-    u8g2.sendBuffer();
-}
+    if (s.sleepMode) {
+        u8g2.sendBuffer();
+        return;
+    }
 
-void oledShowButtonTest(int pressCount, int lightVal) {
-    u8g2.clearBuffer();
-    u8g2.drawFrame(0, 0, 128, 64);
-    u8g2.setCursor(10, 20);
-    u8g2.print("Button Test");
-    u8g2.setCursor(10, 38);
-    u8g2.print("Presses: ");
-    u8g2.print(pressCount);
-    u8g2.setCursor(10, 56);
-    u8g2.print("Light: ");
-    u8g2.print(lightVal);
-    u8g2.sendBuffer();
-}
+    u8g2.setCursor(0, 14);
+    u8g2.print("EMOTION: ");
+    u8g2.print(s.moodValue);
 
-void oledShowEncoderTest(int16_t count, int16_t delta, float revs) {
-    u8g2.clearBuffer();
-    u8g2.drawFrame(0, 0, 128, 64);
-    u8g2.setCursor(10, 20);
-    u8g2.print("Encoder Test");
-    u8g2.setCursor(10, 38);
-    u8g2.print("Count: ");
-    u8g2.print(count);
-    u8g2.setCursor(10, 56);
-    u8g2.print("Rev: ");
-    u8g2.print(revs, 1);
-    u8g2.print(delta > 0 ? " CW >>" : (delta < 0 ? " CCW<<" : " Stop "));
-    u8g2.sendBuffer();
-}
+    u8g2.setCursor(0, 32);
+    if (s.isFull) {
+        unsigned long elapsed = nowMs - s.fullStateStartMs;
+        unsigned long rem = (elapsed >= PetConfig::FULL_DURATION_MS)
+                            ? 0 : PetConfig::FULL_DURATION_MS - elapsed;
+        u8g2.print("FULL ");
+        if (rem / 60000 < 10) u8g2.print("0");
+        u8g2.print(rem / 60000);
+        u8g2.print(" Min ");
+        if ((rem % 60000) / 1000 < 10) u8g2.print("0");
+        u8g2.print((rem % 60000) / 1000);
+        u8g2.print(" S");
+    } else {
+        u8g2.print("HUNGRY");
+    }
 
-void oledShowJointTest(int16_t encCount, const char* encDir, float revs,
-                       int btnCount, int lightVal,
-                       int servoLAngle, int servoRAngle) {
-    u8g2.clearBuffer();
-    u8g2.drawFrame(0, 0, 128, 64);
-    u8g2.setCursor(8, 14);
-    u8g2.print("All-in-One Test");
-    u8g2.setCursor(8, 30);
-    u8g2.print("Enc: ");
-    u8g2.print(encCount);
-    u8g2.print(" ");
-    u8g2.print(encDir);
-    u8g2.print(" ");
-    u8g2.print(revs, 1);
-    u8g2.print("r");
-    u8g2.setCursor(8, 46);
-    u8g2.print("Btn: ");
-    u8g2.print(btnCount);
-    u8g2.print("  Light: ");
-    u8g2.print(lightVal);
-    u8g2.setCursor(8, 62);
-    u8g2.print("L: ");
-    u8g2.print(servoLAngle);
-    u8g2.print((char)176);
-    u8g2.print("  R: ");
-    u8g2.print(servoRAngle);
-    u8g2.print((char)176);
+    u8g2.setCursor(0, 50);
+    switch (s.currentAction) {
+        case ActionMode::NONE:    u8g2.print("NULL"); break;
+        case ActionMode::PLAY:    u8g2.print("PLAY"); break;
+        case ActionMode::IDLE:    u8g2.print("IDLE"); break;
+        case ActionMode::TIRED:   u8g2.print("TIRE"); break;
+        case ActionMode::FORWARD: u8g2.print("FOWD"); break;
+    }
+
     u8g2.sendBuffer();
 }
