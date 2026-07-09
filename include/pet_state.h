@@ -39,7 +39,7 @@ struct PetState {//核心结构体
     unsigned long actionDurationMs = PetConfig::ACTION_DURATION_MS;
 
     // Interaction
-    unsigned long lastPatMs = 0;
+    unsigned long lastPatMs = -PetConfig::PAT_COOLDOWN_MS;
 
     // Sleep mode
     bool sleepMode = false;
