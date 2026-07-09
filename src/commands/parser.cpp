@@ -6,7 +6,7 @@
 
 void parseSerialCommand(PetState& s, unsigned long nowMs) {
     if (!Serial.available()) return;
-
+    Serial.setTimeout(20);
     String line = Serial.readStringUntil('\n');
     line.trim();
     if (line.length() == 0) return;
