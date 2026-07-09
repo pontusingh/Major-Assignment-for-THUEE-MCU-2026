@@ -13,8 +13,8 @@ void sleepUpdate(PetState& s, unsigned long nowMs) {
             s.sleepMode = true;
             if (s.isFull) s.fullPauseElapsedMs = nowMs - s.fullStateStartMs;
             s.currentAction = ActionMode::NONE;
-            servoWrite(PIN_SERVO_LEFT, 80);
-            servoWrite(PIN_SERVO_RIGHT, 80);
+            servoWrite(PIN_SERVO_LEFT, 10);
+            servoWrite(PIN_SERVO_RIGHT, 10);
             Serial.println("Sleep Mode On");
         }
     } else {
