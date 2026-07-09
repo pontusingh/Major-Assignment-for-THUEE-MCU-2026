@@ -4,5 +4,6 @@
 #include "pet_state.h"
 
 void moodUpdate(PetState& s, unsigned long nowMs);
+void moodApplyPat(PetState& s, unsigned long nowMs);
 
 #endif

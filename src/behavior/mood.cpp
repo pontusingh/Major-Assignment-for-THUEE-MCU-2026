@@ -10,3 +10,11 @@ void moodUpdate(PetState& s, unsigned long nowMs) {
         s.lastMoodDecayMs = nowMs;
     }
 }
+
+void moodApplyPat(PetState& s, unsigned long nowMs) {
+    // 空桩——按钮接入后实现
+    // if (nowMs - s.lastPatMs >= PetConfig::PAT_COOLDOWN_MS) {
+    //     if (s.moodValue < PetConfig::MOOD_MAX) s.moodValue++;
+    // }
+    // s.lastPatMs = nowMs;
+}
