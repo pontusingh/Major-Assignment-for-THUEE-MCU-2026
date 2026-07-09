@@ -8,7 +8,7 @@
 #include "servo.h"
 #include "mood.h"
 #include "feeding.h"
-//#include "action.h"
+#include "action.h"
 //#include "sleep.h"
 //#include "commands.h"
 
@@ -31,6 +31,7 @@ void setup() {
     servoWrite(PIN_SERVO_RIGHT, 90);
 
     resetState();
+    randomSeed(esp_random());
 
     Serial.println("=== Desktop Pet Started ===");
 }
@@ -43,8 +44,8 @@ void loop() {
     moodUpdate(state, now);
     //sleepUpdate(state, now);
     feedingUpdate(state, now);
-    //actionUpdate(state, now);
-    //actionTryAutoTrigger(state, now);
+    actionUpdate(state, now);
+    actionTryAutoTrigger(state, now);
 
     //输入处理
         //按钮
