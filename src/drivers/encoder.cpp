@@ -71,7 +71,7 @@ void encoderClearCount() {
 
 bool encoderCheckFullTurn() {
     int16_t count = encoderGetCount();
-    if (abs(count) >= 80) {
+    if (count >= 80) {
         encoderClearCount();
         return true;
     }

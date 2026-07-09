@@ -77,10 +77,23 @@ void loop() {
             Serial.print(state.moodValue);
             Serial.print(" Action:");
             Serial.print(static_cast<int>(state.currentAction));
-            Serial.print(" Feed:");
+            Serial.print(" Full:");
             Serial.print(state.isFull ? 1 : 0);
+            if (state.isFull) {
+                unsigned long elapsed = now - state.fullStateStartMs;
+                if (elapsed >= PetConfig::FULL_DURATION_MS) {
+                    Serial.print(" (0s remain)");
+                } else {
+                    unsigned long remain = PetConfig::FULL_DURATION_MS - elapsed;
+                    Serial.print(" (");
+                    Serial.print(remain / 1000);
+                    Serial.print("s remain)");
+                }
+            }
             Serial.print(" Sleep:");
             Serial.print(state.sleepMode ? 1 : 0);
+            Serial.print(" FeedCnt:");
+            Serial.print(state.feedCount);
             Serial.println();
         }
     }
