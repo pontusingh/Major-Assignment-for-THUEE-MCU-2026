@@ -19,6 +19,9 @@
 #include "encoder.h"
 
 static const pcnt_unit_t PCNT_UNIT = PCNT_UNIT_0;
+static int16_t _prevCount = 0;
+static unsigned long _lastChangeMs = 0;
+static int16_t _contAccum = 0;
 
 void encoderInit() {
     pinMode(PIN_ENCODER_A, INPUT_PULLUP);
@@ -71,9 +74,27 @@ void encoderClearCount() {
 
 bool encoderCheckFullTurn() {
     int16_t count = encoderGetCount();
-    if (count <= -80) {
+    unsigned long now = millis();
+    int16_t delta = count - _prevCount;
+
+    if (delta != 0) {
+        _lastChangeMs = now;
+        _prevCount = count;
+        if (delta < 0) {
+            _contAccum += delta;
+        } else {
+            _contAccum = 0;
+        }
+    } else if (now - _lastChangeMs >= 1000) {
+        _contAccum = 0;
+    }
+
+    if (_contAccum <= -80) {
         encoderClearCount();
+        _contAccum = 0;
+        _prevCount = 0;
         return true;
     }
+
     return false;
 }
