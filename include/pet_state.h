@@ -31,6 +31,7 @@ struct PetState {//核心结构体
     // Feeding system
     bool isFull = false;
     unsigned long fullStateStartMs = 0;
+    unsigned long fullPauseElapsedMs = 0;
 
     // Motion / action system
     ActionMode currentAction = ActionMode::NONE;

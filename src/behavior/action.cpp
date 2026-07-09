@@ -62,6 +62,7 @@ void actionUpdate(PetState& s, unsigned long nowMs) {
 }
 
 void actionTryAutoTrigger(PetState& s, unsigned long nowMs) {
+    if (s.sleepMode) return;
     if (s.currentAction != ActionMode::NONE) return;
 
     static unsigned long lastCheckMs = 0;

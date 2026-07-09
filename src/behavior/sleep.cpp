@@ -11,6 +11,7 @@ void sleepUpdate(PetState& s, unsigned long nowMs) {
             s.dimSinceMs = nowMs;
         } else if (nowMs - s.dimSinceMs >= PetConfig::SLEEP_DIM_THRESHOLD_MS) {
             s.sleepMode = true;
+            if (s.isFull) s.fullPauseElapsedMs = nowMs - s.fullStateStartMs;
             s.currentAction = ActionMode::NONE;
             servoWrite(PIN_SERVO_LEFT, 80);
             servoWrite(PIN_SERVO_RIGHT, 80);
@@ -32,6 +33,10 @@ bool sleepOnButtonPress(PetState& s, unsigned long nowMs) {
 void sleepWakeUp(PetState& s, unsigned long nowMs) {
     s.sleepMode = false;
     s.dimSinceMs = 0;
+    if (s.isFull) {
+        s.fullStateStartMs = nowMs - s.fullPauseElapsedMs;
+        s.fullPauseElapsedMs = 0;
+    }
     servoWrite(PIN_SERVO_LEFT, 90);
     servoWrite(PIN_SERVO_RIGHT, 90);
     Serial.println("Wake Up");
