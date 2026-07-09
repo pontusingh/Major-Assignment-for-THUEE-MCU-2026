@@ -7,7 +7,7 @@
 #include "encoder.h"
 #include "servo.h"
 #include "mood.h"
-//#include "feeding.h"
+#include "feeding.h"
 //#include "action.h"
 //#include "sleep.h"
 //#include "commands.h"
@@ -41,7 +41,7 @@ void loop() {
 
     moodUpdate(g_petState, now);
     //sleepUpdate(g_petState, now);
-    //feedingUpdate(g_petState, now);
+    feedingUpdate(g_petState, now);
     //actionUpdate(g_petState, now);
     //actionTryAutoTrigger(g_petState, now);
 
@@ -50,9 +50,9 @@ void loop() {
         //sleepOnButtonPress / actionOnPat — TBD
     }
 
-    //if (encoderCheckFullTurn()) {
-    //    feedingTrigger(g_petState, now);
-    //}
+    if (encoderCheckFullTurn()) {
+        feedingTrigger(g_petState, now);
+    }
 
     //parseSerialCommand(g_petState);
 
