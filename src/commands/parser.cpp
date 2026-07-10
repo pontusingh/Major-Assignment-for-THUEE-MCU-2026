@@ -52,8 +52,8 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
             s.dimSinceMs = 0;
             s.currentAction = ActionMode::NONE;
             if (s.isFull) s.fullPauseElapsedMs = nowMs - s.fullStateStartMs;
-            servoWrite(PIN_SERVO_LEFT, 80);
-            servoWrite(PIN_SERVO_RIGHT, 80);
+            servoWrite(PIN_SERVO_LEFT, 10);
+            servoWrite(PIN_SERVO_RIGHT, 10);
             Serial.println("Sleep Mode On");
         }
     } else if (line.startsWith("setslp false")) {
