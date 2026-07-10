@@ -33,6 +33,7 @@ void setup() {
 
     if (boot == BootCause::COLD_BOOT) {
         resetState();
+        loadPetMemFromFlash();
         servoWrite(PIN_SERVO_LEFT, 90);
         servoWrite(PIN_SERVO_RIGHT, 90);
         Serial.println("=== Desktop Pet Started ===");

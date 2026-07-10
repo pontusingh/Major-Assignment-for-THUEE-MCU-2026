@@ -60,6 +60,13 @@ void savePetMem() {
     prefs.end();
 }
 
+void loadPetMemFromFlash() {
+    prefs.begin("pet_mem", true);
+    state.patCount  = prefs.getUInt("pat",  0);
+    state.feedCount = prefs.getUInt("feed", 0);
+    prefs.end();
+}
+
 void saveToFlash() {
     // ---- pet_cfg: 进入 deep-sleep 前保存 ----
     prefs.begin("pet_cfg", false);

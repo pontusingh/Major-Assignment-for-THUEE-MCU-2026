@@ -71,3 +71,4 @@ void resetState();
 void saveToFlash();
 void loadFromFlash();
 void savePetMem();
+void loadPetMemFromFlash();
