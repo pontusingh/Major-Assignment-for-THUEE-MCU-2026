@@ -129,6 +129,10 @@ void loop() {
                 case ActionMode::TIRED:   Serial.print("TIRE"); break;
                 case ActionMode::FORWARD: Serial.print("FOWD"); break;
             }
+            Serial.print(" | Head:");
+            Serial.print(state.patCount);
+            Serial.print(" Feed:");
+            Serial.print(state.feedCount);
             Serial.println();
         }
     }
