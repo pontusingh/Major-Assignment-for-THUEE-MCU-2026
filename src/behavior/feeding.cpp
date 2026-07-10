@@ -13,5 +13,6 @@ void feedingTrigger(PetState& s, unsigned long nowMs) {
         s.isFull = true;
         s.fullStateStartMs = nowMs;
         s.feedCount++;
+        savePetMem();
     }
 }

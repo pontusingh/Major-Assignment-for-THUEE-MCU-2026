@@ -71,3 +71,4 @@ extern PetState state;
 void resetState();
 void saveToFlash();
 void loadFromFlash();
+void savePetMem();
