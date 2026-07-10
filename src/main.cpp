@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "pin_config.h"
 #include "pet_state.h"
+#include "soc/esp32s3/rtc.h"
 #include "oled.h"
 #include "photoresistor.h"
 #include "button.h"
@@ -38,8 +39,15 @@ void setup() {
         servoWrite(PIN_SERVO_RIGHT, 90);
         Serial.println("=== Desktop Pet Started ===");
     } else {
-        // deep-sleep 唤醒: 从 Flash 恢复 PetState
+        // deep-sleep 唤醒: 用 RTC 计算深睡时长
+        uint64_t nowRtcUs = esp_rtc_get_time_us();
+        unsigned long sleepMs = (nowRtcUs - sleepEntryRtcUs) / 1000;
+
+        // 先用原始 bootMs 恢复状态
         loadFromFlash();
+
+        // 累加深睡时间到 bootMs（校正后续绝对时间计算）
+        bootMs += sleepMs;
 
         if (boot == BootCause::SLEEP_WAKE) {
             // 睡眠唤醒: 保持 sleepMode, 不归中立位, 不触发动作
@@ -52,6 +60,20 @@ void setup() {
             state.sleepMode = false;
             servoWrite(PIN_SERVO_LEFT, 90);
             servoWrite(PIN_SERVO_RIGHT, 90);
+
+            // 步骤2: fullStateStartMs 补偿深睡时长
+            if (state.isFull) {
+                state.fullStateStartMs -= sleepMs;
+            }
+
+            // 步骤3: 回溯深睡期间的心情衰减
+            unsigned long decay = sleepMs / PetConfig::MOOD_DECAY_INTERVAL_MS;
+            if (decay > 0) {
+                state.moodValue -= decay;
+                if (state.moodValue < PetConfig::MOOD_MIN)
+                    state.moodValue = PetConfig::MOOD_MIN;
+            }
+
             Serial.println("=== Woke from STANDBY ===");
         }
 
@@ -74,6 +96,7 @@ void loop() {
     if (!state.sleepMode && now - state.lastInteractMs >= PetConfig::DEEP_SLEEP_INACTIVITY_MS) {
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Entering standby...");
         saveToFlash();
+        sleepEntryRtcUs = esp_rtc_get_time_us();
         bootMs += millis();
         wasSleeping = false;
         esp_sleep_enable_gpio_wakeup();

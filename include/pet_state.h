@@ -6,6 +6,7 @@
 extern RTC_DATA_ATTR uint32_t     bootMs;
 extern RTC_DATA_ATTR unsigned long lastInteract;
 extern RTC_DATA_ATTR bool          wasSleeping;
+extern RTC_DATA_ATTR uint64_t      sleepEntryRtcUs;
 
 // ---- Boot detection ----
 enum class BootCause : uint8_t {

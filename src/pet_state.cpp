@@ -5,6 +5,7 @@
 RTC_DATA_ATTR uint32_t      bootMs       = 0;
 RTC_DATA_ATTR unsigned long lastInteract = 0;
 RTC_DATA_ATTR bool           wasSleeping  = false;
+RTC_DATA_ATTR uint64_t      sleepEntryRtcUs = 0;
 
 PetState state;//全局实例
 static Preferences prefs;
@@ -51,6 +52,7 @@ void resetState() {//重置
     bootMs = 0;
     lastInteract = 0;
     wasSleeping = false;
+    sleepEntryRtcUs = 0;
 }
 
 void savePetMem() {
@@ -101,7 +103,7 @@ void loadFromFlash() {
     prefs.end();
 
     // 恢复 fullStateStartMs: absTime -> millis()-relative
-    if (state.isFull && absFullStart > bootMs) {
+    if (state.isFull && absFullStart != 0) {
         state.fullStateStartMs = absFullStart - bootMs;
     } else {
         state.isFull = false;  // 数据无效，放弃恢复
