@@ -54,7 +54,7 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
             if (s.isFull) s.fullPauseElapsedMs = nowMs - s.fullStateStartMs;
             servoWrite(PIN_SERVO_LEFT, 10);
             servoWrite(PIN_SERVO_RIGHT, 10);
-            Serial.println("Sleep Mode On");
+            Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  Sleep Mode On");
         }
     } else if (line.startsWith("setslp false")) {
         sleepWakeUp(s, nowMs);

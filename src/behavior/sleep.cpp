@@ -15,7 +15,7 @@ void sleepUpdate(PetState& s, unsigned long nowMs) {
             s.currentAction = ActionMode::NONE;
             servoWrite(PIN_SERVO_LEFT, 10);
             servoWrite(PIN_SERVO_RIGHT, 10);
-            Serial.println("Sleep Mode On");
+            Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  Sleep Mode On");
         }
     } else {
         s.dimSinceMs = 0;
@@ -39,5 +39,5 @@ void sleepWakeUp(PetState& s, unsigned long nowMs) {
     }
     servoWrite(PIN_SERVO_LEFT, 90);
     servoWrite(PIN_SERVO_RIGHT, 90);
-    Serial.println("Sleep Mode Off");
+    Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  Sleep Mode Off");
 }
