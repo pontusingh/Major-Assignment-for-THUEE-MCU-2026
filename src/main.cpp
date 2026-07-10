@@ -70,6 +70,16 @@ void loop() {
     //串口命令解析（最高优先级）
     parseSerialCommand(state, now);
 
+    // ---- 无活动待机检测 ----
+    if (!state.sleepMode && now - state.lastInteractMs >= PetConfig::DEEP_SLEEP_INACTIVITY_MS) {
+        Serial.print("["); Serial.print(now); Serial.println(" ms]  Entering standby...");
+        saveToFlash();
+        bootMs += millis();
+        wasSleeping = false;
+        esp_sleep_enable_gpio_wakeup();
+        esp_deep_sleep_start();
+    }
+
     //行为更新
     moodUpdate(state, now);
     sleepUpdate(state, now);
@@ -81,6 +91,8 @@ void loop() {
         //按钮
     if (buttonWasPressed()) {
         buttonClearFlag();
+        state.lastInteractMs = now;
+        lastInteract = bootMs + now;
         if (!state.sleepMode) {
             Serial.print("["); Serial.print(now); Serial.println(" ms]  HeadTouch");
         }
@@ -91,6 +103,8 @@ void loop() {
 
         //编码器
     if (!state.sleepMode && encoderCheckFullTurn()) {
+        state.lastInteractMs = now;
+        lastInteract = bootMs + now;
         feedingTrigger(state, now);
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Feed");
     }

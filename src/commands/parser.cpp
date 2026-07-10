@@ -22,6 +22,10 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
     line.trim();
     if (line.length() == 0) return;
 
+    // 任何有效串口命令重置交互计时
+    s.lastInteractMs = nowMs;
+    lastInteract = bootMs + nowMs;
+
     if (line.startsWith("setemo ")) {
         if (!s.sleepMode) {
             int val = constrain(line.substring(7).toInt(), PetConfig::MOOD_MIN, PetConfig::MOOD_MAX);
