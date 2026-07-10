@@ -4,7 +4,6 @@
 #include <Arduino.h>
 
 void photoInit();
-int photoReadAnalog();
 int photoReadDigital();
 
 #endif

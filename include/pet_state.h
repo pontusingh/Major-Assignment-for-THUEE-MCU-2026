@@ -11,7 +11,6 @@ namespace PetConfig {//可调变量放入命名空间
     constexpr unsigned long PAT_COOLDOWN_MS          = 10000;//按钮冷却
     constexpr unsigned long SLEEP_DIM_THRESHOLD_MS   = 5000;//低光照睡眠
     constexpr unsigned long ACTION_DURATION_MS       = 5000;//动作周期
-    constexpr unsigned long STATUS_PRINT_INTERVAL_MS = 5000;//串口打印间隔
     constexpr unsigned long DEEP_SLEEP_INACTIVITY_MS = 30000;//选修部分
 }
 
@@ -44,9 +43,6 @@ struct PetState {//核心结构体
     // Sleep mode
     bool sleepMode = false;
     unsigned long dimSinceMs = 0;
-
-    // Debug / serial
-    unsigned long lastStatusPrintMs = 0;
 
     // 选修部分: deep-sleep & Flash persistence
     bool wasSleeping = false;

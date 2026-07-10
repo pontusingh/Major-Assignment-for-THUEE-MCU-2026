@@ -20,10 +20,6 @@ void photoInit() {
     pinMode(PIN_PHOTORESISTOR, INPUT);
 }
 
-int photoReadAnalog() {
-    return analogRead(PIN_PHOTORESISTOR);
-}
-
 int photoReadDigital() {
     return digitalRead(PIN_PHOTORESISTOR);
 }

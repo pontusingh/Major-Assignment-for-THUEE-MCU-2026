@@ -18,8 +18,6 @@ void resetState() {//重置
     state.sleepMode = false;
     state.dimSinceMs = 0;
 
-    state.lastStatusPrintMs = 0;
-
     state.wasSleeping = false;
     state.lastInteractMs = millis();
     state.patCount = 0;
