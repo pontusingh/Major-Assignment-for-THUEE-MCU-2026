@@ -8,6 +8,17 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
     if (!Serial.available()) return;
     Serial.setTimeout(20);
     String line = Serial.readStringUntil('\n');
+
+    // 过滤不可见控制字符
+    if (line.length() > 0) {
+        int w = 0;
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c >= ' ') line.setCharAt(w++, c);
+        }
+        line = line.substring(0, w);
+    }
+
     line.trim();
     if (line.length() == 0) return;
 
