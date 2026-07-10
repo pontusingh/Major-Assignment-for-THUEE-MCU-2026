@@ -30,6 +30,25 @@ namespace PetConfig {//可调变量放入命名空间
     constexpr unsigned long DEEP_SLEEP_INACTIVITY_MS = 30000;//选修部分
 }
 
+// ---- patCount 分级查询 ----
+inline int getMoodMax(uint32_t patCount) {
+    if (patCount >= 16) return 10;
+    if (patCount >= 6)  return 9;
+    return 7;
+}
+
+inline unsigned long getPatCooldown(uint32_t patCount) {
+    if (patCount >= 16) return 5000;
+    if (patCount >= 6)  return 7000;
+    return 10000;
+}
+
+inline int getAutoActionProb(uint32_t patCount) {
+    if (patCount >= 16) return 80;
+    if (patCount >= 6)  return 50;
+    return 33;
+}
+
 enum class ActionMode : uint8_t {//动作枚举
     NONE    = 0,
     PLAY    = 1,

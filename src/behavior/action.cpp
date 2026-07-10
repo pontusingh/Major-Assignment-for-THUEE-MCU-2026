@@ -74,7 +74,7 @@ void actionTryAutoTrigger(PetState& s, unsigned long nowMs) {
     if (nowMs - lastCheckMs < 1000) return;
     lastCheckMs = nowMs;
 
-    if (random(1000) >= 33) return;
+    if (random(1000) >= getAutoActionProb(s.patCount)) return;
 
     ActionMode mode = (s.moodValue >= PetConfig::MOOD_DEFAULT)
                       ? ActionMode::IDLE : ActionMode::TIRED;
@@ -82,7 +82,7 @@ void actionTryAutoTrigger(PetState& s, unsigned long nowMs) {
 }
 
 void actionOnPat(PetState& s, unsigned long nowMs) {
-    bool ready = (nowMs - s.lastPatMs >= PetConfig::PAT_COOLDOWN_MS);
+    bool ready = (nowMs - s.lastPatMs >= getPatCooldown(s.patCount));
     if (!ready) {
         s.lastPatMs = nowMs;
         return;

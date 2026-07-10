@@ -28,7 +28,7 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
 
     if (line.startsWith("setemo ")) {
         if (!s.sleepMode) {
-            int val = constrain(line.substring(7).toInt(), PetConfig::MOOD_MIN, PetConfig::MOOD_MAX);
+            int val = constrain(line.substring(7).toInt(), PetConfig::MOOD_MIN, getMoodMax(s.patCount));
             s.moodValue = val;
             s.lastMoodDecayMs = nowMs;
         }
