@@ -1,5 +1,20 @@
 #pragma once//头文件保护
 #include <Arduino.h>
+#include "esp_sleep.h"
+
+// ---- RTC Memory (survives deep-sleep) ----
+extern RTC_DATA_ATTR uint32_t     bootMs;
+extern RTC_DATA_ATTR unsigned long lastInteract;
+extern RTC_DATA_ATTR bool          wasSleeping;
+
+// ---- Boot detection ----
+enum class BootCause : uint8_t {
+    COLD_BOOT,       // 首次上电 / 复位
+    STANDBY_WAKE,    // 从 deep-sleep 待机唤醒 (wasSleeping == false)
+    SLEEP_WAKE       // 从 deep-sleep 睡眠唤醒 (wasSleeping == true)
+};
+
+BootCause detectBootCause();
 
 namespace PetConfig {//可调变量放入命名空间
     constexpr int MOOD_MIN = 1;
@@ -45,8 +60,7 @@ struct PetState {//核心结构体
     unsigned long dimSinceMs = 0;
 
     // 选修部分: deep-sleep & Flash persistence
-    bool wasSleeping = false;
-    unsigned long lastInteractMs = 0;
+    unsigned long lastInteractMs = 0; // millis()-relative, 当前运行周期内使用
     uint32_t patCount = 0;
     uint32_t feedCount = 0;
     uint32_t playCount = 0;

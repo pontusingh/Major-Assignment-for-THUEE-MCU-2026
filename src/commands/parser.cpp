@@ -49,6 +49,7 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
     } else if (line.startsWith("setslp true")) {
         if (!s.sleepMode) {
             s.sleepMode = true;
+            wasSleeping = true;
             s.dimSinceMs = 0;
             s.currentAction = ActionMode::NONE;
             if (s.isFull) s.fullPauseElapsedMs = nowMs - s.fullStateStartMs;

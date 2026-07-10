@@ -27,13 +27,39 @@ void setup() {
     encoderInit();
     servoInit(PIN_SERVO_LEFT, 0);
     servoInit(PIN_SERVO_RIGHT, 1);
-    servoWrite(PIN_SERVO_LEFT, 90);
-    servoWrite(PIN_SERVO_RIGHT, 90);
 
-    resetState();
+    // ---- 选修--启动检测 ----
+    BootCause boot = detectBootCause();
+
+    if (boot == BootCause::COLD_BOOT) {
+        resetState();
+        servoWrite(PIN_SERVO_LEFT, 90);
+        servoWrite(PIN_SERVO_RIGHT, 90);
+        Serial.println("=== Desktop Pet Started ===");
+    } else {
+        // deep-sleep 唤醒: 从 Flash 恢复 PetState
+        loadFromFlash();
+
+        if (boot == BootCause::SLEEP_WAKE) {
+            // 睡眠唤醒: 保持 sleepMode, 不归中立位, 不触发动作
+            state.sleepMode = true;
+            servoWrite(PIN_SERVO_LEFT, 10);
+            servoWrite(PIN_SERVO_RIGHT, 10);
+            Serial.println("=== Woke from SLEEP ===");
+        } else {
+            // 待机唤醒: 恢复正常运行
+            state.sleepMode = false;
+            servoWrite(PIN_SERVO_LEFT, 90);
+            servoWrite(PIN_SERVO_RIGHT, 90);
+            Serial.println("=== Woke from STANDBY ===");
+        }
+
+        // 重置交互时间戳，给用户 30s 交互窗口
+        state.lastInteractMs = millis();
+        lastInteract = bootMs + millis();
+    }
+
     randomSeed(esp_random());
-
-    Serial.println("=== Desktop Pet Started ===");
 }
 
 void loop() {
