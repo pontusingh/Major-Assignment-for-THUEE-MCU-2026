@@ -99,7 +99,7 @@ void loop() {
         sleepEntryRtcUs = esp_rtc_get_time_us();
         bootMs += millis();
         wasSleeping = false;
-        esp_sleep_enable_gpio_wakeup();
+        esp_sleep_enable_ext0_wakeup(GPIO_NUM_0, 0);
         esp_deep_sleep_start();
     }
 

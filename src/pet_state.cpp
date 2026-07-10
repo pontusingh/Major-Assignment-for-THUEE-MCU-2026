@@ -13,7 +13,7 @@ static Preferences prefs;
 BootCause detectBootCause() {
     esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
 
-    if (cause == ESP_SLEEP_WAKEUP_GPIO) {
+    if (cause == ESP_SLEEP_WAKEUP_EXT0) {
         // BOOT 键唤醒，根据 wasSleeping 区分待机/睡眠
         return wasSleeping ? BootCause::SLEEP_WAKE
                            : BootCause::STANDBY_WAKE;
