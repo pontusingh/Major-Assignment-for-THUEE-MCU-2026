@@ -67,6 +67,14 @@ void loadPetMemFromFlash() {
     prefs.end();
 }
 
+void clearPetMem() {
+    prefs.begin("pet_mem", false);
+    prefs.clear();
+    prefs.end();
+    state.patCount = 0;
+    state.feedCount = 0;
+}
+
 void saveToFlash() {
     // ---- pet_cfg: 进入 deep-sleep 前保存 ----
     prefs.begin("pet_cfg", false);

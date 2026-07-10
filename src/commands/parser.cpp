@@ -59,6 +59,9 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
         }
     } else if (line.startsWith("setslp false")) {
         sleepWakeUp(s, nowMs);
+    } else if (line.startsWith("resetmem")) {
+        clearPetMem();
+        Serial.println("Memory cleared");
     } else {
         if (!s.sleepMode){
         Serial.print("["); Serial.print(nowMs); Serial.print(" ms]  Unknown command: ");
