@@ -88,7 +88,6 @@ void actionOnPat(PetState& s, unsigned long nowMs) {
         return;
     }
     s.patCount++;//只计算有效拍头
-    s.playCount++;
     savePetMem();
     moodApplyPat(s, nowMs);
     actionTrigger(s, ActionMode::PLAY, nowMs);

@@ -46,7 +46,6 @@ void resetState() {//重置
     state.lastInteractMs = millis();
     state.patCount = 0;
     state.feedCount = 0;
-    state.playCount = 0;
 
     // 重置 RTC 变量 (仅首次上电 / 冷启动)
     bootMs = 0;
@@ -58,7 +57,6 @@ void savePetMem() {
     prefs.begin("pet_mem", false);
     prefs.putUInt("pat",  state.patCount);
     prefs.putUInt("feed", state.feedCount);
-    prefs.putUInt("play", state.playCount);
     prefs.end();
 }
 
@@ -104,6 +102,5 @@ void loadFromFlash() {
     prefs.begin("pet_mem", true);
     state.patCount  = prefs.getUInt("pat",  0);
     state.feedCount = prefs.getUInt("feed", 0);
-    state.playCount = prefs.getUInt("play", 0);
     prefs.end();
 }
