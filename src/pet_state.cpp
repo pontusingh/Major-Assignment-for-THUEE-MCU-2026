@@ -1,8 +1,8 @@
 #include "pet_state.h"
 
-PetState state;
+PetState state;//全局实例
 
-void resetState() {
+void resetState() {//重置
     state.moodValue = PetConfig::MOOD_DEFAULT;
     state.lastMoodDecayMs = millis();
 
