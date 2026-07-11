@@ -1,4 +1,5 @@
 #include "feeding.h"
+#include "storage/flash_storage.h"
 
 void feedingUpdate(PetState& s, unsigned long nowMs) {
     if (s.isFull) {
@@ -12,7 +13,6 @@ void feedingTrigger(PetState& s, unsigned long nowMs) {
     if (!s.sleepMode) {
         s.isFull = true;
         s.fullStateStartMs = nowMs;
-        s.feedCount++;
-        savePetMem();
+        incrementFeedCount();
     }
 }
