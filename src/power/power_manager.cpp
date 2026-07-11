@@ -3,6 +3,7 @@
 #include "servo.h"
 #include "pin_config.h"
 #include "soc/esp32s3/rtc.h"
+#include "driver/rtc_io.h"
 
 RTC_DATA_ATTR uint32_t      bootMs          = 0;
 RTC_DATA_ATTR unsigned long lastInteract    = 0;
@@ -65,6 +66,8 @@ void enterDeepSleep() {
     sleepEntryRtcUs = esp_rtc_get_time_us();
     bootMs += millis();
     wasSleeping = false;
+    rtc_gpio_pullup_en(GPIO_NUM_7);
+    rtc_gpio_pulldown_dis(GPIO_NUM_7);
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_7, 0);
     esp_deep_sleep_start();
 }
