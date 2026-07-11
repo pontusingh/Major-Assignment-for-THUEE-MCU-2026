@@ -2,6 +2,7 @@
 #include "flash_storage.h"
 #include "servo.h"
 #include "pin_config.h"
+#include "oled.h"
 #include "soc/esp32s3/rtc.h"
 #include "driver/rtc_io.h"
 
@@ -66,6 +67,11 @@ void enterDeepSleep() {
     sleepEntryRtcUs = esp_rtc_get_time_us();
     bootMs += millis();
     wasSleeping = false;
+    state.sleepMode = true;
+    oledShowStatus(state, millis());
+    servoWrite(PIN_SERVO_LEFT, 10);
+    servoWrite(PIN_SERVO_RIGHT, 10);
+    delay(500);
     rtc_gpio_pullup_en(GPIO_NUM_7);
     rtc_gpio_pulldown_dis(GPIO_NUM_7);
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_7, 0);
