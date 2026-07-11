@@ -30,6 +30,7 @@ void setup() {
     servoInit(PIN_SERVO_LEFT, 0);
     servoInit(PIN_SERVO_RIGHT, 1);
 
+    //唤醒原因判断
     BootCause boot = detectBootCause();
 
     if (boot == BootCause::COLD_BOOT) {
@@ -46,21 +47,27 @@ void setup() {
 }
 
 void loop() {
+    //确认时间
     unsigned long now = millis();
 
+    //串口命令解析(最高优先级)
     parseSerialCommand(state, now);
 
+    //深睡待机
     if (!state.sleepMode && now - state.lastInteractMs >= PetConfig::DEEP_SLEEP_INACTIVITY_MS) {
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Entering standby...");
         enterDeepSleep();
     }
-
+    
+    //行为更新
     moodUpdate(state, now);
     sleepUpdate(state, now);
     feedingUpdate(state, now);
     actionUpdate(state, now);
     actionTryAutoTrigger(state, now);
 
+    //==输入处理==
+    //按钮
     if (buttonWasPressed()) {
         buttonClearFlag();
         state.lastInteractMs = now;
@@ -73,6 +80,7 @@ void loop() {
         }
     }
 
+    //编码器
     if (!state.sleepMode && encoderCheckFullTurn()) {
         state.lastInteractMs = now;
         lastInteract = bootMs + now;
@@ -80,11 +88,13 @@ void loop() {
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Feed");
     }
 
+    //OLED刷新
     if (now - lastOledRefresh >= OLED_REFRESH_MS) {
         lastOledRefresh = now;
         oledShowStatus(state, now);
     }
 
+    //打印状态
     if (now - lastSerialPrint >= SERIAL_INTERVAL_MS) {
         lastSerialPrint = now;
         if (!state.sleepMode) {
