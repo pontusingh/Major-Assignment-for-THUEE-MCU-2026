@@ -3,7 +3,7 @@
 #include "mood.h"
 #include "servo.h"
 #include "pin_config.h"
-#include "storage/flash_storage.h"
+#include "flash_storage.h"
 
 static void _applyActionAngles(PetState& s, unsigned long elapsedMs) {
     float t = elapsedMs / 1000.0f;

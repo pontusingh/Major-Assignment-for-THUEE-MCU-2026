@@ -2,7 +2,7 @@
 #include "photoresistor.h"
 #include "servo.h"
 #include "pin_config.h"
-#include "power/power_manager.h"
+#include "power_manager.h"
 
 void sleepUpdate(PetState& s, unsigned long nowMs) {
     if (s.sleepMode) return;

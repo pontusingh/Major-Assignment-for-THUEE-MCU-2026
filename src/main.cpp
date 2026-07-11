@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include "pin_config.h"
 #include "pet_state.h"
-#include "power/power_manager.h"
-#include "storage/flash_storage.h"
+#include "power_manager.h"
+#include "flash_storage.h"
 #include "oled.h"
 #include "photoresistor.h"
 #include "button.h"

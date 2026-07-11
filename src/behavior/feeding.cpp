@@ -1,5 +1,5 @@
 #include "feeding.h"
-#include "storage/flash_storage.h"
+#include "flash_storage.h"
 
 void feedingUpdate(PetState& s, unsigned long nowMs) {
     if (s.isFull) {

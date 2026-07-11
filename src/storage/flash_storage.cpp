@@ -1,6 +1,6 @@
-#include "storage/flash_storage.h"
+#include "flash_storage.h"
 #include <Preferences.h>
-#include "power/power_manager.h"
+#include "power_manager.h"
 
 static Preferences prefs;
 

@@ -1,5 +1,5 @@
-#include "power/power_manager.h"
-#include "storage/flash_storage.h"
+#include "power_manager.h"
+#include "flash_storage.h"
 #include "servo.h"
 #include "pin_config.h"
 #include "soc/esp32s3/rtc.h"

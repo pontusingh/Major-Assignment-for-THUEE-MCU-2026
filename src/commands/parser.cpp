@@ -3,8 +3,8 @@
 #include "sleep.h"
 #include "servo.h"
 #include "pin_config.h"
-#include "power/power_manager.h"
-#include "storage/flash_storage.h"
+#include "power_manager.h"
+#include "flash_storage.h"
 
 void parseSerialCommand(PetState& s, unsigned long nowMs) {
     if (!Serial.available()) return;
