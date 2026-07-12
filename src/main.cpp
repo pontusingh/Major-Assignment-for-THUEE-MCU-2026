@@ -13,6 +13,7 @@
 #include "action.h"
 #include "sleep.h"
 #include "commands.h"
+#include "wifi_manager.h"
 
 static unsigned long lastOledRefresh = 0;
 static const unsigned long OLED_REFRESH_MS = 500;
@@ -29,6 +30,9 @@ void setup() {
     encoderInit();
     servoInit(PIN_SERVO_LEFT, 0);
     servoInit(PIN_SERVO_RIGHT, 1);
+
+    // WiFi初始化（非阻塞，后台连接）
+    wifiInit();
 
     //唤醒原因判断
     BootCause boot = detectBootCause();
@@ -49,6 +53,9 @@ void setup() {
 void loop() {
     //确认时间
     unsigned long now = millis();
+
+    // WiFi状态检查 + 自动重连
+    wifiUpdate(now);
 
     //串口命令解析(最高优先级)
     parseSerialCommand(state, now);

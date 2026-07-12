@@ -66,6 +66,9 @@ struct PetState {//核心结构体
     unsigned long lastInteractMs = 0;
     uint32_t patCount = 0;
     uint32_t feedCount = 0;
+
+    // WiFi
+    bool wifiConnected = false;
 };
 
 extern PetState state;
