@@ -69,6 +69,11 @@ struct PetState {//核心结构体
 
     // WiFi
     bool wifiConnected = false;
+
+    // Weather
+    unsigned long lastFetchAttemptMs = 0;
+    bool lastFetchOk = false;
+    char cachedWeatherText[32] = "--";
 };
 
 extern PetState state;

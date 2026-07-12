@@ -14,6 +14,7 @@
 #include "sleep.h"
 #include "commands.h"
 #include "wifi_manager.h"
+#include "weather_client.h"
 
 static unsigned long lastOledRefresh = 0;
 static const unsigned long OLED_REFRESH_MS = 500;
@@ -56,6 +57,9 @@ void loop() {
 
     // WiFi状态检查 + 自动重连
     wifiUpdate(now);
+
+    // 天气获取（5分钟间隔，WiFi门控）
+    weatherUpdate(state, now);
 
     //串口命令解析(最高优先级)
     parseSerialCommand(state, now);
