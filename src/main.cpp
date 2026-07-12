@@ -60,6 +60,7 @@ void loop() {
 
     // 天气获取（5分钟间隔，WiFi门控）
     weatherUpdate(state, now);
+    now = millis(); // HTTP可能阻塞数秒，刷新时间戳
 
     //串口命令解析(最高优先级)
     parseSerialCommand(state, now);

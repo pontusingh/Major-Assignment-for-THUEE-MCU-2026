@@ -21,21 +21,23 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, PIN_OLED_SCL, P
 
 void oledInit() {
     u8g2.begin();
-    u8g2.setFont(u8g2_font_6x13_tf);
+    u8g2.enableUTF8Print();
+    u8g2.setFont(u8g2_font_wqy12_t_chinese3);
 }
 
 void oledShowStatus(PetState& s, unsigned long nowMs) {
     u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_wqy12_t_chinese3);
     if (s.sleepMode) {
         u8g2.sendBuffer();
         return;
     }
 
-    u8g2.setCursor(0, 14);
+    u8g2.setCursor(0, 13);
     u8g2.print("EMOTION: ");
     u8g2.print(s.moodValue);
 
-    u8g2.setCursor(0, 32);
+    u8g2.setCursor(0, 28);
     if (s.isFull) {
         unsigned long elapsed = nowMs - s.fullStateStartMs;
         unsigned long rem = (elapsed >= PetConfig::FULL_DURATION_MS)
@@ -51,7 +53,7 @@ void oledShowStatus(PetState& s, unsigned long nowMs) {
         u8g2.print("HUNGRY");
     }
 
-    u8g2.setCursor(0, 50);
+    u8g2.setCursor(0, 43);
     switch (s.currentAction) {
         case ActionMode::NONE:    u8g2.print("NULL"); break;
         case ActionMode::PLAY:    u8g2.print("PLAY"); break;
@@ -59,6 +61,9 @@ void oledShowStatus(PetState& s, unsigned long nowMs) {
         case ActionMode::TIRED:   u8g2.print("TIRE"); break;
         case ActionMode::FORWARD: u8g2.print("FOWD"); break;
     }
+
+    u8g2.setCursor(0, 58);
+    u8g2.print(s.cachedWeatherText);
 
     u8g2.sendBuffer();
 }
