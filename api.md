@@ -27,3 +27,44 @@ ef86e2b18420d4017baf74d9b3d77c2b
 | humidity     | 空气湿度                 |                                           |
 | reporttime   | 数据发布的时间           |                                           |
 ```
+
+```
+{
+"status" :
+"1",
+"count" :
+"1",
+"info" :
+"OK",
+"infocode" :
+"10000",
+"lives" :
+[
+"0" :
+{
+"province" :
+"北京",
+"city" :
+"海淀区",
+"adcode" :
+"110108",
+"weather" :
+"阴",
+"temperature" :
+"27",
+"winddirection" :
+"西南",
+"windpower" :
+"≤3",
+"humidity" :
+"88",
+"reporttime" :
+"2026-07-12 12:38:16",
+"temperature_float" :
+"27.0",
+"humidity_float" :
+"88.0"
+}
+]
+}
+```
