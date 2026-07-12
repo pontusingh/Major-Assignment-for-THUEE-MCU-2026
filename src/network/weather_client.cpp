@@ -82,7 +82,7 @@ static bool fetchWeather(PetState& s) {
 }
 
 void weatherUpdate(PetState& s, unsigned long nowMs) {
-    if (nowMs - s.lastFetchAttemptMs < WEATHER_FETCH_INTERVAL_MS) return;
+    if (s.lastFetchAttemptMs != 0 && nowMs - s.lastFetchAttemptMs < WEATHER_FETCH_INTERVAL_MS) return;
     if (!wifiIsConnected()) return;
 
     s.lastFetchAttemptMs = nowMs;
