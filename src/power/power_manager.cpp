@@ -46,12 +46,14 @@ void restoreAfterWake(BootCause boot) {
         servoWrite(PIN_SERVO_LEFT, 90);
         servoWrite(PIN_SERVO_RIGHT, 90);
 
-        unsigned long decay = sleepMs / PetConfig::MOOD_DECAY_INTERVAL_MS;
+        unsigned long totalSinceLastDecay = absoluteMs() - state.lastMoodDecayMs;
+        unsigned long decay = totalSinceLastDecay / PetConfig::MOOD_DECAY_INTERVAL_MS;
         if (decay > 0) {
             state.moodValue -= decay;
             if (state.moodValue < PetConfig::MOOD_MIN)
                 state.moodValue = PetConfig::MOOD_MIN;
         }
+        state.lastMoodDecayMs = absoluteMs();
 
         Serial.println("=== Woke from STANDBY ===");
     }

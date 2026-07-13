@@ -33,6 +33,7 @@ void saveToFlash() {
     prefs.putULong("fullStart", state.fullStateStartMs);
     prefs.putUChar("action",  static_cast<uint8_t>(state.currentAction));
     prefs.putBool("sleep",    state.sleepMode);
+    prefs.putULong("lastDecay", state.lastMoodDecayMs);
     prefs.end();
 
     savePetMem();
@@ -46,6 +47,7 @@ void loadFromFlash() {
     state.currentAction = static_cast<ActionMode>(
                               prefs.getUChar("action", 0));
     state.sleepMode     = prefs.getBool("sleep", false);
+    state.lastMoodDecayMs = prefs.getULong("lastDecay", absoluteMs());
     prefs.end();
 
     if (state.isFull && absFullStart != 0) {
@@ -55,7 +57,6 @@ void loadFromFlash() {
         state.fullStateStartMs = absoluteMs();
     }
 
-    state.lastMoodDecayMs = absoluteMs();
     state.lastPatMs       = 0;
     state.actionStartMs   = absoluteMs();
 
