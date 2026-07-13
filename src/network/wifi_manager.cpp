@@ -4,6 +4,7 @@
 
 static unsigned long lastReconnectMs = 0;
 static const unsigned long RECONNECT_INTERVAL_MS = 10000;
+static bool s_started = false;
 
 void wifiInit() {
     Serial.println("[WiFi] Initializing...");
@@ -12,6 +13,7 @@ void wifiInit() {
 
 void wifiStart() {
     Serial.println("[WiFi] Starting connection...");
+    s_started = true;
     WiFi.begin(WIFI_SSID, WIFI_PASS);
 }
 
@@ -28,7 +30,7 @@ void wifiUpdate(unsigned long nowMs) {
         }
     }
 
-    if (!connected && (nowMs - lastReconnectMs >= RECONNECT_INTERVAL_MS)) {
+    if (!connected && s_started && (nowMs - lastReconnectMs >= RECONNECT_INTERVAL_MS)) {
         lastReconnectMs = nowMs;
         Serial.println("[WiFi] Attempting reconnect...");
         WiFi.reconnect();
