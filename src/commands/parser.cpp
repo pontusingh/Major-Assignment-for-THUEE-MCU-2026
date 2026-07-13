@@ -5,6 +5,7 @@
 #include "pin_config.h"
 #include "power_manager.h"
 #include "flash_storage.h"
+#include "wifi_manager.h"
 
 void parseSerialCommand(PetState& s, unsigned long nowMs) {
     if (!Serial.available()) return;
@@ -68,6 +69,9 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
     } else if (line.startsWith("resetmem")) {
         clearPetMem();
         Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  Memory cleared");
+    } else if (line == "wificonnect") {
+        wifiStart();
+        Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  WiFi connecting...");
     } else {
         if (!s.sleepMode){
         Serial.print("["); Serial.print(nowMs); Serial.print(" ms]  Unknown command: ");

@@ -7,6 +7,7 @@
 #define WIFI_PASS  "yanyuanqing"
 
 void wifiInit();
+void wifiStart();
 void wifiUpdate(unsigned long nowMs);
 bool wifiIsConnected();
 

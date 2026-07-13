@@ -8,6 +8,10 @@ static const unsigned long RECONNECT_INTERVAL_MS = 10000;
 void wifiInit() {
     Serial.println("[WiFi] Initializing...");
     WiFi.mode(WIFI_STA);
+}
+
+void wifiStart() {
+    Serial.println("[WiFi] Starting connection...");
     WiFi.begin(WIFI_SSID, WIFI_PASS);
 }
 
