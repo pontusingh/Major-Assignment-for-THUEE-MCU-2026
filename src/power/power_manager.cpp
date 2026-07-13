@@ -11,6 +11,8 @@ RTC_DATA_ATTR unsigned long lastInteract    = 0;
 RTC_DATA_ATTR bool           wasSleeping    = false;
 RTC_DATA_ATTR uint64_t      sleepEntryRtcUs = 0;
 
+unsigned long absoluteMs() { return bootMs + millis(); }
+
 BootCause detectBootCause() {
     esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
 
@@ -30,9 +32,9 @@ void restoreAfterWake(BootCause boot) {
     uint64_t nowRtcUs = esp_rtc_get_time_us();
     unsigned long sleepMs = (nowRtcUs - sleepEntryRtcUs) / 1000;
 
-    loadFromFlash();
-
     bootMs += sleepMs;
+
+    loadFromFlash();
 
     if (boot == BootCause::SLEEP_WAKE) {
         state.sleepMode = true;
@@ -44,10 +46,6 @@ void restoreAfterWake(BootCause boot) {
         servoWrite(PIN_SERVO_LEFT, 90);
         servoWrite(PIN_SERVO_RIGHT, 90);
 
-        if (state.isFull) {
-            state.fullStateStartMs -= sleepMs;
-        }
-
         unsigned long decay = sleepMs / PetConfig::MOOD_DECAY_INTERVAL_MS;
         if (decay > 0) {
             state.moodValue -= decay;
@@ -58,8 +56,8 @@ void restoreAfterWake(BootCause boot) {
         Serial.println("=== Woke from STANDBY ===");
     }
 
-    state.lastInteractMs = millis();
-    lastInteract = bootMs + millis();
+    state.lastInteractMs = absoluteMs();
+    lastInteract = absoluteMs();
 }
 
 void enterDeepSleep() {
@@ -68,7 +66,7 @@ void enterDeepSleep() {
     bootMs += millis();
     wasSleeping = false;
     state.sleepMode = true;
-    oledShowStatus(state, millis());
+    oledShowStatus(state, absoluteMs());
     servoWrite(PIN_SERVO_LEFT, 10);
     servoWrite(PIN_SERVO_RIGHT, 10);
     delay(500);

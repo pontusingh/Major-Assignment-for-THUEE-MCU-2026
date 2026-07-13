@@ -16,6 +16,7 @@ enum class BootCause : uint8_t {
     SLEEP_WAKE
 };
 
+unsigned long absoluteMs();
 BootCause detectBootCause();
 void restoreAfterWake(BootCause boot);
 void enterDeepSleep();

@@ -1,10 +1,11 @@
 #include "pet_state.h"
+#include "power_manager.h"
 
 PetState state;//全局实例
 
 void resetState() {//重置
     state.moodValue = PetConfig::MOOD_DEFAULT;
-    state.lastMoodDecayMs = millis();
+    state.lastMoodDecayMs = absoluteMs();
 
     state.isFull = false;
     state.fullStateStartMs = 0;
@@ -18,7 +19,7 @@ void resetState() {//重置
     state.sleepMode = false;
     state.dimSinceMs = 0;
 
-    state.lastInteractMs = millis();
+    state.lastInteractMs = absoluteMs();
     state.patCount = 0;
     state.feedCount = 0;
 }

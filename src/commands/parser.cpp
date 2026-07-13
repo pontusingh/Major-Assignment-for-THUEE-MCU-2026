@@ -27,7 +27,7 @@ void parseSerialCommand(PetState& s, unsigned long nowMs) {
 
     // 任何有效串口命令重置交互计时
     s.lastInteractMs = nowMs;
-    lastInteract = bootMs + nowMs;
+    lastInteract = nowMs;
 
     if (line.startsWith("setemo ")) {
         if (!s.sleepMode) {

@@ -53,14 +53,14 @@ void setup() {
 
 void loop() {
     //确认时间
-    unsigned long now = millis();
+    unsigned long now = absoluteMs();
 
     // WiFi状态检查 + 自动重连
     wifiUpdate(now);
 
     // 天气获取（5分钟间隔，WiFi门控）
     weatherUpdate(state, now);
-    now = millis(); // HTTP可能阻塞数秒，刷新时间戳
+    now = absoluteMs(); // HTTP可能阻塞数秒，刷新时间戳
 
     //串口命令解析(最高优先级)
     parseSerialCommand(state, now);
@@ -83,7 +83,7 @@ void loop() {
     if (buttonWasPressed()) {
         buttonClearFlag();
         state.lastInteractMs = now;
-        lastInteract = bootMs + now;
+        lastInteract = now;
         if (!state.sleepMode) {
             Serial.print("["); Serial.print(now); Serial.println(" ms]  HeadTouch");
         }
@@ -95,7 +95,7 @@ void loop() {
     //编码器
     if (!state.sleepMode && encoderCheckFullTurn()) {
         state.lastInteractMs = now;
-        lastInteract = bootMs + now;
+        lastInteract = now;
         feedingTrigger(state, now);
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Feed");
     }

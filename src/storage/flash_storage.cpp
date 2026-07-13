@@ -30,7 +30,7 @@ void saveToFlash() {
     prefs.begin("pet_cfg", false);
     prefs.putInt("mood",      state.moodValue);
     prefs.putBool("isFull",   state.isFull);
-    prefs.putULong("fullStart", bootMs + state.fullStateStartMs);
+    prefs.putULong("fullStart", state.fullStateStartMs);
     prefs.putUChar("action",  static_cast<uint8_t>(state.currentAction));
     prefs.putBool("sleep",    state.sleepMode);
     prefs.end();
@@ -49,15 +49,15 @@ void loadFromFlash() {
     prefs.end();
 
     if (state.isFull && absFullStart != 0) {
-        state.fullStateStartMs = absFullStart - bootMs;
+        state.fullStateStartMs = absFullStart;
     } else {
         state.isFull = false;
-        state.fullStateStartMs = millis();
+        state.fullStateStartMs = absoluteMs();
     }
 
-    state.lastMoodDecayMs = millis();
+    state.lastMoodDecayMs = absoluteMs();
     state.lastPatMs       = 0;
-    state.actionStartMs   = millis();
+    state.actionStartMs   = absoluteMs();
 
     prefs.begin("pet_mem", true);
     state.patCount  = prefs.getUInt("pat",  0);
