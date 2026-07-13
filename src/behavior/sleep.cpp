@@ -39,5 +39,7 @@ void sleepWakeUp(PetState& s, unsigned long nowMs) {
         s.fullStateStartMs = nowMs - s.fullPauseElapsedMs;
         s.fullPauseElapsedMs = 0;
     }
+    servoWrite(PIN_SERVO_LEFT, 90);
+    servoWrite(PIN_SERVO_RIGHT, 90);
     Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  Sleep Mode Off");
 }
