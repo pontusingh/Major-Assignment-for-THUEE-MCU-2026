@@ -14,7 +14,7 @@ void resetState() {//重置
     state.actionStartMs = 0;
     state.actionDurationMs = PetConfig::ACTION_DURATION_MS;
 
-    state.lastPatMs = 0;
+    state.lastPatMs = -PetConfig::PAT_COOLDOWN_MS;
 
     state.sleepMode = false;
     state.dimSinceMs = 0;
