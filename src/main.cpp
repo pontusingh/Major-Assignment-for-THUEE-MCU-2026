@@ -65,7 +65,7 @@ void loop() {
     //串口命令解析(最高优先级)
     parseSerialCommand(state, now);
 
-    //深睡待机
+    //待机睡眠
     if (!state.sleepMode && now - state.lastInteractMs >= PetConfig::DEEP_SLEEP_INACTIVITY_MS) {
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Entering standby...");
         wasSleeping = false;

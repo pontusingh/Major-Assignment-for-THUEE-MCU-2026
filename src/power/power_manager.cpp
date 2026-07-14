@@ -40,9 +40,11 @@ void restoreAfterWake(BootCause boot) {
     servoWrite(PIN_SERVO_LEFT, 90);
     servoWrite(PIN_SERVO_RIGHT, 90);
 
+    //待机睡眠苏醒修复
     if (boot == BootCause::STANDBY_WAKE) {
         unsigned long wakeMs = absoluteMs();
         unsigned long decayMs = 0;
+        //衰减时间修正
         if (!state.isFull) {
             decayMs = sleepMs;
         } else {
@@ -51,6 +53,7 @@ void restoreAfterWake(BootCause boot) {
                 decayMs = wakeMs - fullEndMs;
             }
         }
+        //心情衰减计算
         unsigned long decay = decayMs / PetConfig::MOOD_DECAY_INTERVAL_MS;
         if (decay > 0) {
             state.moodValue -= decay;
@@ -59,7 +62,9 @@ void restoreAfterWake(BootCause boot) {
         }
         state.lastMoodDecayMs = wakeMs;
         Serial.println("=== Woke from STANDBY ===");
-    } else {
+    } 
+    //低光睡眠苏醒修复
+    else {
         state.fullStateStartMs += sleepMs;
         state.lastMoodDecayMs = absoluteMs();
         Serial.print("["); Serial.print(absoluteMs()); Serial.println(" ms]  Sleep Mode Off");
