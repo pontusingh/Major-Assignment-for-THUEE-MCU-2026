@@ -68,6 +68,7 @@ void loop() {
     //深睡待机
     if (!state.sleepMode && now - state.lastInteractMs >= PetConfig::DEEP_SLEEP_INACTIVITY_MS) {
         Serial.print("["); Serial.print(now); Serial.println(" ms]  Entering standby...");
+        wasSleeping = false;
         enterDeepSleep();
     }
     
@@ -87,9 +88,7 @@ void loop() {
         if (!state.sleepMode) {
             Serial.print("["); Serial.print(now); Serial.println(" ms]  HeadTouch");
         }
-        if (!sleepOnButtonPress(state, now)) {
-            actionOnPat(state, now);
-        }
+        actionOnPat(state, now);
     }
 
     //编码器

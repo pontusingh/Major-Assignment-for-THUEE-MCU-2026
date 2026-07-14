@@ -11,13 +11,8 @@ void sleepUpdate(PetState& s, unsigned long nowMs) {
         if (s.dimSinceMs == 0) {
             s.dimSinceMs = nowMs;
         } else if (nowMs - s.dimSinceMs >= PetConfig::SLEEP_DIM_THRESHOLD_MS) {
-            s.sleepMode = true;
-            wasSleeping = true; // 标记: 唤醒后区分为睡眠唤醒
-            if (s.isFull) s.fullPauseElapsedMs = nowMs - s.fullStateStartMs;
-            s.currentAction = ActionMode::NONE;
-            servoWrite(PIN_SERVO_LEFT, 10);
-            servoWrite(PIN_SERVO_RIGHT, 10);
-            Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  Sleep Mode On");
+            wasSleeping = true;
+            enterDeepSleep();
         }
     } else {
         s.dimSinceMs = 0;
