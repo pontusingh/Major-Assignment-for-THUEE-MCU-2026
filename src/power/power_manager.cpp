@@ -62,6 +62,7 @@ void restoreAfterWake(BootCause boot) {
     } else {
         state.fullStateStartMs += sleepMs;
         state.lastMoodDecayMs = absoluteMs();
+        Serial.print("["); Serial.print(absoluteMs()); Serial.println(" ms]  Sleep Mode Off");
         Serial.println("=== Woke from SLEEP ===");
     }
 

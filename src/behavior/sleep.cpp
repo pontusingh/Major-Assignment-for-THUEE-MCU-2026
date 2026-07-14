@@ -12,6 +12,7 @@ void sleepUpdate(PetState& s, unsigned long nowMs) {
             s.dimSinceMs = nowMs;
         } else if (nowMs - s.dimSinceMs >= PetConfig::SLEEP_DIM_THRESHOLD_MS) {
             wasSleeping = true;
+            Serial.print("["); Serial.print(nowMs); Serial.println(" ms]  Sleep Mode On");
             enterDeepSleep();
         }
     } else {
