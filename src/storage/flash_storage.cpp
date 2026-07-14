@@ -40,6 +40,7 @@ void saveToFlash() {
 }
 
 void loadFromFlash() {
+    //读取cfg命名空间
     prefs.begin("pet_cfg", true);
     state.moodValue     = prefs.getInt("mood", PetConfig::MOOD_DEFAULT);
     state.isFull        = prefs.getBool("isFull", false);
@@ -50,6 +51,7 @@ void loadFromFlash() {
     state.lastMoodDecayMs = prefs.getULong("lastDecay", absoluteMs());
     prefs.end();
 
+    //饱腹时间修复
     if (state.isFull && absFullStart != 0) {
         state.fullStateStartMs = absFullStart;
     } else {
@@ -60,6 +62,7 @@ void loadFromFlash() {
     state.lastPatMs       = 0;
     state.actionStartMs   = absoluteMs();
 
+    //读取mem命名空间
     prefs.begin("pet_mem", true);
     state.patCount  = prefs.getUInt("pat",  0);
     state.feedCount = prefs.getUInt("feed", 0);
